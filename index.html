@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Рунописец</title>
+
+<style>
+
+body{
+background:#111;
+color:white;
+font-family:Arial,sans-serif;
+text-align:center;
+padding:20px;
+}
+
+h1{
+color:#d4af37;
+font-size:36px;
+}
+
+textarea{
+width:90%;
+height:130px;
+background:#222;
+color:white;
+border:2px solid #d4af37;
+border-radius:10px;
+font-size:35px;
+padding:10px;
+}
+
+button{
+background:#d4af37;
+color:black;
+border:none;
+border-radius:10px;
+padding:12px 20px;
+margin:5px;
+font-size:18px;
+cursor:pointer;
+}
+
+.keyboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
+gap:10px;
+margin-top:30px;
+}
+
+.key{
+background:#222;
+border:2px solid #555;
+border-radius:10px;
+padding:10px;
+cursor:pointer;
+}
+
+.key:hover{
+border-color:#d4af37;
+}
+
+.rune{
+color:#d4af37;
+font-size:32px;
+}
+
+.letter{
+font-size:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>ᚱᚢᚾᚨ Рунописец</h1>
+
+<textarea id="text"></textarea>
+
+<br>
+
+<button onclick="copyText()">Копировать</button>
+<button onclick="enterText()">Enter</button>
+<button onclick="deleteText()">Удалить</button>
+<button onclick="clearText()">Очистить</button>
+
+<div class="keyboard">
+  <div class="key" onclick="add('ᚨ')"><div class="rune">ᚨ</div><div class="letter">А</div></div>
+<div class="key" onclick="add('ᛒ')"><div class="rune">ᛒ</div><div class="letter">Б</div></div>
+<div class="key" onclick="add('ᚹ')"><div class="rune">ᚹ</div><div class="letter">В</div></div>
+<div class="key" onclick="add('ᚷ')"><div class="rune">ᚷ</div><div class="letter">Г</div></div>
+<div class="key" onclick="add('ᛞ')"><div class="rune">ᛞ</div><div class="letter">Д</div></div>
+<div class="key" onclick="add('ᛖ')"><div class="rune">ᛖ</div><div class="letter">Е</div></div>
+<div class="key" onclick="add('ᛖ')"><div class="rune">ᛖ</div><div class="letter">Ё</div></div>
+<div class="key" onclick="add('ᛃ')"><div class="rune">ᛃ</div><div class="letter">Ж</div></div>
+<div class="key" onclick="add('ᛉ')"><div class="rune">ᛉ</div><div class="letter">З</div></div>
+<div class="key" onclick="add('ᛁ')"><div class="rune">ᛁ</div><div class="letter">И</div></div>
+<div class="key" onclick="add('ᛃ')"><div class="rune">ᛃ</div><div class="letter">Й</div></div>
+<div class="key" onclick="add('ᚲ')"><div class="rune">ᚲ</div><div class="letter">К</div></div>
+<div class="key" onclick="add('ᛚ')"><div class="rune">ᛚ</div><div class="letter">Л</div></div>
+<div class="key" onclick="add('ᛗ')"><div class="rune">ᛗ</div><div class="letter">М</div></div>
+<div class="key" onclick="add('ᚾ')"><div class="rune">ᚾ</div><div class="letter">Н</div></div>
+<div class="key" onclick="add('ᛟ')"><div class="rune">ᛟ</div><div class="letter">О</div></div>
+<div class="key" onclick="add('ᛈ')"><div class="rune">ᛈ</div><div class="letter">П</div></div>
+<div class="key" onclick="add('ᚱ')"><div class="rune">ᚱ</div><div class="letter">Р</div></div>
+<div class="key" onclick="add('ᛊ')"><div class="rune">ᛊ</div><div class="letter">С</div></div>
+<div class="key" onclick="add('ᛏ')"><div class="rune">ᛏ</div><div class="letter">Т</div></div>
+<div class="key" onclick="add('ᚢ')"><div class="rune">ᚢ</div><div class="letter">У</div></div>
+<div class="key" onclick="add('ᚠ')"><div class="rune">ᚠ</div><div class="letter">Ф</div></div>
+<div class="key" onclick="add('ᚺ')"><div class="rune">ᚺ</div><div class="letter">Х</div></div>
+<div class="key" onclick="add('ᛏᛊ')"><div class="rune">ᛏᛊ</div><div class="letter">Ц</div></div>
+<div class="key" onclick="add('ᚲᚺ')"><div class="rune">ᚲᚺ</div><div class="letter">Ч</div></div>
+<div class="key" onclick="add('ᛊᚺ')"><div class="rune">ᛊᚺ</div><div class="letter">Ш</div></div>
+<div class="key" onclick="add('ᛊᚲ')"><div class="rune">ᛊᚲ</div><div class="letter">Щ</div></div>
+<div class="key" onclick="add('ᛁ')"><div class="rune">ᛁ</div><div class="letter">Ы</div></div>
+<div class="key" onclick="add('ᛖ')"><div class="rune">ᛖ</div><div class="letter">Э</div></div>
+<div class="key" onclick="add('ᛃᚢ')"><div class="rune">ᛃᚢ</div><div class="letter">Ю</div></div>
+<div class="key" onclick="add('ᛃᚨ')"><div class="rune">ᛃᚨ</div><div class="letter">Я</div></div>
+<div class="key" onclick="add('ᛜ')"><div class="rune">ᛜ</div><div class="letter">НГ</div></div>
+
+</div>
+
+<script>
+
+function add(rune){
+document.getElementById("text").value += rune;
+}
+
+function deleteText(){
+let t=document.getElementById("text");
+t.value=t.value.slice(0,-1);
+}
+
+function enterText(){
+document.getElementById("text").value += "\n";
+}
+
+function clearText(){
+document.getElementById("text").value="";
+}
+
+function copyText(){
+let t=document.getElementById("text");
+navigator.clipboard.writeText(t.value);
+alert("Скопировано");
+}
+
+</script>
+
+</body>
+</html>
