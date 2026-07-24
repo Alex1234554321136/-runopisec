@@ -1,0 +1,56 @@
+<div class="keyboard">
+
+<button onclick="add('ᚨ')">ᚨ<br><small>А</small></button>
+<button onclick="add('ᛒ')">ᛒ<br><small>Б</small></button>
+<button onclick="add('ᚹ')">ᚹ<br><small>В</small></button>
+<button onclick="add('ᚷ')">ᚷ<br><small>Г</small></button>
+<button onclick="add('ᛞ')">ᛞ<br><small>Д</small></button>
+<button onclick="add('ᛖ')">ᛖ<br><small>Е</small></button>
+
+<button onclick="add('ᛃ')">ᛃ<br><small>Ж</small></button>
+<button onclick="add('ᛉ')">ᛉ<br><small>З</small></button>
+<button onclick="add('ᛁ')">ᛁ<br><small>И</small></button>
+<button onclick="add('ᚲ')">ᚲ<br><small>К</small></button>
+<button onclick="add('ᛚ')">ᛚ<br><small>Л</small></button>
+<button onclick="add('ᛗ')">ᛗ<br><small>М</small></button>
+
+<button onclick="add('ᚾ')">ᚾ<br><small>Н</small></button>
+<button onclick="add('ᛟ')">ᛟ<br><small>О</small></button>
+<button onclick="add('ᛈ')">ᛈ<br><small>П</small></button>
+<button onclick="add('ᚱ')">ᚱ<br><small>Р</small></button>
+<button onclick="add('ᛊ')">ᛊ<br><small>С</small></button>
+<button onclick="add('ᛏ')">ᛏ<br><small>Т</small></button>
+
+<button onclick="add('ᚢ')">ᚢ<br><small>У</small></button>
+<button onclick="add('ᚠ')">ᚠ<br><small>Ф</small></button>
+<button onclick="add('ᚺ')">ᚺ<br><small>Х</small></button>
+<button onclick="add('ᛜ')">ᛜ<br><small>НГ</small></button>
+
+<button onclick="add('ᛃᚢ')">ᛃᚢ<br><small>Ю</small></button>
+<button onclick="add('ᛃᚨ')">ᛃᚨ<br><small>Я</small></button>
+
+</div>
+function backspace(){
+
+let t=document.getElementById("text");
+
+t.value=t.value.slice(0,-1);
+
+}
+
+function space(){
+
+add(" ");
+
+}
+<div class="menu">
+
+<button onclick="copyText()">📋 Копировать</button>
+
+<button onclick="space()">␣ Пробел</button>
+
+<button onclick="backspace()">⌫ Назад</button>
+
+<button onclick="clearText()">🗑 Очистить</button>
+
+</div>
