@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Рунописец</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#111;
+font-family:Arial,sans-serif;
+color:white;
+padding:20px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+margin-bottom:25px;
+font-size:38px;
+color:#d4af37;
+}
+
+textarea{
+width:100%;
+height:180px;
+background:#222;
+color:white;
+border:2px solid #d4af37;
+border-radius:10px;
+padding:15px;
+font-size:22px;
+resize:vertical;
+outline:none;
+}
+
+.buttons{
+margin-top:20px;
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+button{
+background:#d4af37;
+color:black;
+border:none;
+padding:15px 30px;
+font-size:18px;
+border-radius:10px;
+cursor:pointer;
+transition:.2s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.result{
+margin-top:25px;
+background:#222;
+border:2px solid #d4af37;
+border-radius:10px;
+padding:20px;
+min-height:120px;
+font-size:28px;
+word-break:break-word;
+}
+
+.keyboard{
+margin-top:35px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(70px,1fr));
+gap:12px;
+}
+
+.key{
+background:#222;
+border:2px solid #555;
+border-radius:10px;
+padding:12px;
+text-align:center;
+cursor:pointer;
+transition:.2s;
+font-size:28px;
+}
+
+.key:hover{
+border-color:#d4af37;
+transform:scale(1.05);
+}
+
+.alphabet{
+margin-top:40px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+gap:12px;
+}
+
+.card{
+background:#222;
+border:2px solid #444;
+border-radius:10px;
+padding:15px;
+text-align:center;
+}
+
+.rune{
+font-size:42px;
+color:#d4af37;
+}
+
+.letter{
+margin-top:10px;
+font-size:22px;
+}
+
+@media(max-width:700px){
+
+textarea{
+font-size:18px;
+}
+
+.result{
+font-size:22px;
+}
+
+button{
+width:100%;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Русский Рунописец</h1>
+
+<textarea id="input" placeholder="Введите русский текст..."></textarea>
+
+<div class="buttons">
+
+<button onclick="translateRunes()">
+Перевести
+</button>
+
+<button onclick="copyResult()">
+Копировать
+</button>
+
+<button onclick="clearAll()">
+Очистить
+</button>
+
+</div>
+
+<div id="result" class="result"></div>
+
+<div class="keyboard" id="keyboard"><div class="key" onclick="addRune('ᚨ')">ᚨ</div>
+<div class="key" onclick="addRune('ᛒ')">ᛒ</div>
+<div class="key" onclick="addRune('ᚹ')">ᚹ</div>
+<div class="key" onclick="addRune('ᚷ')">ᚷ</div>
+<div class="key" onclick="addRune('ᛞ')">ᛞ</div>
+<div class="key" onclick="addRune('ᛖ')">ᛖ</div>
+<div class="key" onclick="addRune('ᚠ')">ᚠ</div>
+<div class="key" onclick="addRune('ᚺ')">ᚺ</div>
+<div class="key" onclick="addRune('ᛁ')">ᛁ</div>
+<div class="key" onclick="addRune('ᛃ')">ᛃ</div>
+<div class="key" onclick="addRune('ᛚ')">ᛚ</div>
+<div class="key" onclick="addRune('ᛗ')">ᛗ</div>
+<div class="key" onclick="addRune('ᚾ')">ᚾ</div>
+<div class="key" onclick="addRune('ᛟ')">ᛟ</div>
+<div class="key" onclick="addRune('ᛈ')">ᛈ</div>
+<div class="key" onclick="addRune('ᚱ')">ᚱ</div>
+<div class="key" onclick="addRune('ᛋ')">ᛋ</div>
+<div class="key" onclick="addRune('ᛏ')">ᛏ</div>
+<div class="key" onclick="addRune('ᚢ')">ᚢ</div>
+<div class="key" onclick="addRune('ᛉ')">ᛉ</div>
+
+</div>
+
+<h2 style="margin-top:40px;text-align:center;color:#d4af37;">
+Русский рунический алфавит
+</h2>
+
+<div class="alphabet">
+
+<div class="card"><div class="rune">ᚨ</div><div class="letter">А</div></div>
+<div class="card"><div class="rune">ᛒ</div><div class="letter">Б</div></div>
+<div class="card"><div class="rune">ᚹ</div><div class="letter">В</div></div>
+<div class="card"><div class="rune">ᚷ</div><div class="letter">Г</div></div>
+<div class="card"><div class="rune">ᛞ</div><div class="letter">Д</div></div>
+<div class="card"><div class="rune">ᛖ</div><div class="letter">Е</div></div>
+<div class="card"><div class="rune">ᚠ</div><div class="letter">Ж</div></div>
+<div class="card"><div class="rune">ᚺ</div><div class="letter">З</div></div>
+<div class="card"><div class="rune">ᛁ</div><div class="letter">И</div></div>
+<div class="card"><div class="rune">ᛃ</div><div class="letter">Й</div></div>
+<div class="card"><div class="rune">ᚲ</div><div class="letter">К</div></div>
+<div class="card"><div class="rune">ᛚ</div><div class="letter">Л</div></div>
+<div class="card"><div class="rune">ᛗ</div><div class="letter">М</div></div>
+<div class="card"><div class="rune">ᚾ</div><div class="letter">Н</div></div>
+<div class="card"><div class="rune">ᛟ</div><div class="letter">О</div></div>
+<div class="card"><div class="rune">ᛈ</div><div class="letter">П</div></div>
+<div class="card"><div class="rune">ᚱ</div><div class="letter">Р</div></div>
+<div class="card"><div class="rune">ᛋ</div><div class="letter">С</div></div>
+<div class="card"><div class="rune">ᛏ</div><div class="letter">Т</div></div>
+<div class="card"><div class="rune">ᚢ</div><div class="letter">У</div></div>
+<div class="card"><div class="rune">ᛉ</div><div class="letter">Я</div></div>
+
+</div>  
+<button onclick="addRune('ᛞ')">ᛞ<br>Г</button>
+        <button onclick="addRune('ᛖ')">ᛖ<br>Д</button>
+        <button onclick="addRune('ᚠ')">ᚠ<br>Е</button>
+        <button onclick="addRune('ᚷ')">ᚷ<br>Ж</button>
+        <button onclick="addRune('ᚺ')">ᚺ<br>З</button>
+        <button onclick="addRune('ᛁ')">ᛁ<br>И</button>
+        <button onclick="addRune('ᛃ')">ᛃ<br>Й</button>
+        <button onclick="addRune('ᚲ')">ᚲ<br>К</button>
+        <button onclick="addRune('ᛚ')">ᛚ<br>Л</button>
+        <button onclick="addRune('ᛗ')">ᛗ<br>М</button>
+        <button onclick="addRune('ᚾ')">ᚾ<br>Н</button>
+        <button onclick="addRune('ᛟ')">ᛟ<br>О</button>
+        <button onclick="addRune('ᛈ')">ᛈ<br>П</button>
+        <button onclick="addRune('ᚱ')">ᚱ<br>Р</button>
+        <button onclick="addRune('ᛊ')">ᛊ<br>С</button>
+        <button onclick="addRune('ᛏ')">ᛏ<br>Т</button>
+        <button onclick="addRune('ᚢ')">ᚢ<br>У</button>
+        <button onclick="addRune('ᚹ')">ᚹ<br>Ф</button>
+        <button onclick="addRune('ᚺ')">ᚺ<br>Х</button>
+        <button onclick="addRune('ᛉ')">ᛉ<br>Ц</button>
+        <button onclick="addRune('ᛇ')">ᛇ<br>Ч</button>
+        <button onclick="addRune('ᛜ')">ᛜ<br>Ш</button>
+        <button onclick="addRune('ᛞ')">ᛞ<br>Щ</button>
+        <button onclick="addRune('ᛒ')">ᛒ<br>Ъ</button>
+        <button onclick="addRune('ᛡ')">ᛡ<br>Ы</button>
+        <button onclick="addRune('ᛠ')">ᛠ<br>Ь</button>
+        <button onclick="addRune('ᛟ')">ᛟ<br>Э</button>
+        <button onclick="addRune('ᚦ')">ᚦ<br>Ю</button>
+        <button onclick="addRune('ᚨ')">ᚨ<br>Я</button>
+
