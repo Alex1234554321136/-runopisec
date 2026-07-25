@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Руническая клавиатура</title>
+
+<style>
+body {
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 28px;
+}
+
+#text {
+    width: 90%;
+    min-height: 60px;
+    font-size: 24px;
+    background: #222;
+    color: white;
+    border: 2px solid #555;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.control button {
+    background: #333;
+    color: white;
+    border: 1px solid #777;
+    border-radius: 10px;
+    padding: 12px;
+    margin: 5px;
+    font-size: 16px;
+}
+
+.keyboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.key {
+    background: #222;
+    border: 2px solid #777;
+    border-radius: 12px;
+    padding: 12px 5px;
+    cursor: pointer;
+}
+
+.key:hover {
+    background: #444;
+}
+
+.rune {
+    font-size: 38px;
+}
+
+.letter {
+    font-size: 18px;
+    margin-top: 5px;
+    color: #ccc;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>ᚱ Руническая клавиатура</h1>
+
+<textarea id="text" readonly></textarea>
+
+<div class="control">
+<button onclick="copyText()">📋 Копировать</button>
+<button onclick="deleteText()">⌫ Удалить</button>
+<button onclick="enterText()">↵ Enter</button>
+<button onclick="clearText()">Очистить</button>
+</div>
+
+
+<div class="keyboard" id="keyboard"></div>
+
+
+<script>
+
+const runes = [
+["ᚠ","Ф"],["ᚢ","У"],["ᚦ","Т"],["ᚨ","А"],
+["ᚱ","Р"],["ᚲ","К"],["ᚷ","Г"],["ᚹ","В"],
+["ᚺ","Х"],["ᚾ","Н"],["ᛁ","И"],["ᛃ","Й"],
+["ᛇ","Э"],["ᛈ","П"],["ᛉ","З"],["ᛋ","С"],
+["ᛏ","Т"],["ᛒ","Б"],["ᛖ","Е"],["ᛗ","М"],
+["ᛚ","Л"],["ᛜ","НГ"],["ᛞ","Д"],["ᛟ","О"]
+];
+
+
+let output = document.getElementById("text");
+let keyboard = document.getElementById("keyboard");
+
+
+runes.forEach(r => {
+
+    let button = document.createElement("div");
+    button.className = "key";
+
+    button.innerHTML =
+    `<div class="rune">${r[0]}</div>
+     <div class="letter">${r[1]}</div>`;
+
+    button.onclick = function(){
+        output.value += r[0];
+    };
+
+    keyboard.appendChild(button);
+
+});
+
+
+function deleteText(){
+    output.value = output.value.slice(0,-1);
+}
+
+
+function clearText(){
+    output.value = "";
+}
+
+
+function enterText(){
+    output.value += "\n";
+}
+
+
+function copyText(){
+
+    navigator.clipboard.writeText(output.value);
+
+    alert("Скопировано!");
+}
+
+</script>
+
+</body>
+</html>
