@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Русский рунный алфавит</title>
+
+<style>
+
+body {
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+.search {
+    margin: 20px;
+}
+
+input {
+    font-size: 22px;
+    padding: 10px;
+    width: 200px;
+    border-radius: 10px;
+}
+
+button {
+    font-size: 22px;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border-radius: 10px;
+}
+
+#result {
+    font-size: 35px;
+    margin: 20px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+}
+
+.rune {
+    background: #222;
+    border: 2px solid #555;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.symbol {
+    font-size: 70px;
+}
+
+.letter {
+    font-size: 25px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Русский рунный алфавит</h1>
+
+<div class="search">
+
+<input id="input" placeholder="Введите букву">
+
+<button onclick="searchRune()">
+Поиск
+</button>
+
+<div id="result"></div>
+
+</div>
+
+<div class="container">
+  <div class="rune">
+<div class="symbol">ᚠ</div>
+<div class="letter">А</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚢ</div>
+<div class="letter">Б</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚦ</div>
+<div class="letter">В</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚨ</div>
+<div class="letter">Г</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚱ</div>
+<div class="letter">Д</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚲ</div>
+<div class="letter">Е</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚷ</div>
+<div class="letter">Ж</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚹ</div>
+<div class="letter">З</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚺ</div>
+<div class="letter">И</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᚾ</div>
+<div class="letter">К</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛁ</div>
+<div class="letter">Л</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛃ</div>
+<div class="letter">М</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛇ</div>
+<div class="letter">Н</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛈ</div>
+<div class="letter">О</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛉ</div>
+<div class="letter">П</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛋ</div>
+<div class="letter">Р</div>
+</div>
+<div class="rune">
+<div class="symbol">ᛏ</div>
+<div class="letter">С</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛒ</div>
+<div class="letter">Т</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛖ</div>
+<div class="letter">У</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛗ</div>
+<div class="letter">Ф</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛚ</div>
+<div class="letter">Х</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛜ</div>
+<div class="letter">Ц</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛞ</div>
+<div class="letter">Ч</div>
+</div>
+
+<div class="rune">
+<div class="symbol">ᛟ</div>
+<div class="letter">Ш</div>
+</div>
+
+</div>
+
+
+<script>
+
+function searchRune(){
+
+let letter = document
+.getElementById("input")
+.value
+.toUpperCase();
+
+
+let runes = {
+
+"А":"ᚠ",
+"Б":"ᚢ",
+"В":"ᚦ",
+"Г":"ᚨ",
+"Д":"ᚱ",
+"Е":"ᚲ",
+"Ж":"ᚷ",
+"З":"ᚹ",
+"И":"ᚺ",
+"К":"ᚾ",
+"Л":"ᛁ",
+"М":"ᛃ",
+"Н":"ᛇ",
+"О":"ᛈ",
+"П":"ᛉ",
+"Р":"ᛋ",
+"С":"ᛏ",
+"Т":"ᛒ",
+"У":"ᛖ",
+"Ф":"ᛗ",
+"Х":"ᛚ",
+"Ц":"ᛜ",
+"Ч":"ᛞ",
+"Ш":"ᛟ"
+
+};
+
+
+if(runes[letter]){
+
+document.getElementById("result").innerHTML =
+letter + " → " + runes[letter];
+
+}
+
+else{
+
+document.getElementById("result").innerHTML =
+"Руна не найдена";
+
+}
+
+}
+
+</script>
+
+
+</body>
+</html>
