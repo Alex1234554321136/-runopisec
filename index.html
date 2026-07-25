@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Руническая клавиатура</title>
+
+
+<style>
+
+body {
+    background:#111;
+    color:white;
+    font-family:Arial, sans-serif;
+    text-align:center;
+    padding:20px;
+}
+
+
+h1 {
+    font-size:32px;
+}
+
+
+#screen {
+
+    width:90%;
+    min-height:90px;
+    margin:20px auto;
+    padding:15px;
+
+    background:#222;
+    border-radius:10px;
+
+    font-size:45px;
+    word-wrap:break-word;
+
+}
+
+
+#keyboard {
+
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+
+}
+
+
+button {
+
+    width:75px;
+    height:75px;
+
+    background:#222;
+    color:white;
+
+    border:1px solid #555;
+    border-radius:10px;
+
+}
+
+
+button:active {
+
+    background:#555;
+
+}
+
+
+.rune {
+
+    display:block;
+    font-size:35px;
+
+}
+
+
+.letter {
+
+    display:block;
+    font-size:13px;
+    margin-top:5px;
+
+}
+
+
+.control {
+
+    width:110px;
+    height:45px;
+
+    margin:10px;
+
+    font-size:16px;
+
+}
+
+
+</style>
+
+</head>
+
+
+
+<body>
+
+
+<h1>ᚱᚢᚾᛟᛈᛁᛊᛖᚲ</h1>
+
+<h2>Русская руническая клавиатура</h2>
+
+
+<div id="screen"></div>
+
+
+<div id="keyboard"></div>
+
+
+<br>
+
+
+<button class="control" onclick="backspace()">
+⌫
+</button>
+
+
+<button class="control" onclick="space()">
+Пробел
+</button>
+
+
+<button class="control" onclick="clearText()">
+Очистить
+</button>
+
+
+
+<script>
+
+
+const runes = [
+
+
+["ᚨ","А"],
+["ᛒ","Б"],
+["ᚹ","В"],
+["ᚷ","Г"],
+["ᛞ","Д"],
+
+["ᛖ","Е/Ё/Э"],
+
+["ᚦ","Ж/Ш/Ч/Щ"],
+
+["ᛉ","З"],
+
+["ᛁ","И/Й/Ы"],
+
+["ᚲ","К"],
+["ᛚ","Л"],
+["ᛗ","М"],
+
+["ᚾ","Н"],
+
+["ᛟ","О"],
+
+["ᛈ","П"],
+
+["ᚱ","Р"],
+
+["ᛊ","С"],
+
+["ᛏ","Т"],
+
+["ᚢ","У"],
+
+["ᚠ","Ф"],
+
+["ᚺ","Х"],
+
+
+["ᛏᛊ","Ц"],
+
+["ᛃᚢ","Ю"],
+
+["ᛃᚨ","Я"],
+
+
+["ᛜ","НГ"]
+
+];
+
+
+
+let screen = document.getElementById("screen");
+
+let keyboard = document.getElementById("keyboard");
+
+
+
+runes.forEach(function(item){
+
+
+let button = document.createElement("button");
+
+
+button.innerHTML =
+"<span class='rune'>" + item[0] + "</span>" +
+"<span class='letter'>" + item[1] + "</span>";
+
+
+
+button.onclick = function(){
+
+screen.innerHTML += item[0];
+
+};
+
+
+
+keyboard.appendChild(button);
+
+
+});
+
+
+
+
+function backspace(){
+
+screen.innerHTML =
+screen.innerHTML.slice(0,-1);
+
+}
+
+
+
+function space(){
+
+screen.innerHTML += " ";
+
+}
+
+
+
+function clearText(){
+
+screen.innerHTML = "";
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
