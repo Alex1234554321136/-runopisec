@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Русская руническая клавиатура</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    background:#111;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
+}
+
+h1{
+    font-size:30px;
+}
+
+
+#mode{
+    margin:10px;
+    font-size:18px;
+    color:#ccc;
+}
+
+
+#text{
+
+    width:95%;
+    min-height:120px;
+    padding:12px;
+    font-size:24px;
+    background:#222;
+    color:white;
+    border:2px solid #666;
+    border-radius:12px;
+
+}
+
+
+.toolbar{
+    margin-top:20px;
+}
+
+
+.group{
+
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:10px;
+
+}
+
+
+button{
+
+    background:#333;
+    color:white;
+    border:2px solid #777;
+    border-radius:10px;
+    padding:12px;
+    font-size:16px;
+
+}
+
+
+button:active{
+
+    background:#555;
+
+}
+
+
+.keyboard{
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:25px;
+
+}
+
+
+.key{
+
+    background:#222;
+    border:2px solid #777;
+    border-radius:12px;
+    padding:12px 5px;
+
+}
+
+
+.rune{
+
+    font-size:38px;
+
+}
+
+
+.letter{
+
+    margin-top:5px;
+    font-size:18px;
+    color:#ccc;
+
+}
+
+
+/* Светлая тема */
+
+.light{
+
+    background:#eee;
+    color:#111;
+
+}
+
+
+.light #text{
+
+    background:white;
+    color:#111;
+
+}
+
+
+.light .key{
+
+    background:white;
+    color:#111;
+
+}
+
+
+.light button{
+
+    background:white;
+    color:#111;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>ᚱ Русская руническая клавиатура</h1>
+
+
+<div id="mode">
+Режим: Руны
+</div>
+
+
+<div class="toolbar">
+
+
+<div class="group">
+
+<button onclick="copyText()">📋 Копировать</button>
+
+<button onclick="downloadTXT()">💾 TXT</button>
+
+<button onclick="downloadPNG()">🖼 PNG</button>
+
+</div>
+
+
+<div class="group">
+
+<button onclick="switchMode()">🔄 Руны / Буквы</button>
+
+<button onclick="translateText()">🔄 Перевести</button>
+
+</div>
+
+
+<div class="group">
+
+<button onclick="favorites()">⭐ Избранное</button>
+
+<button onclick="historyList()">📖 История</button>
+
+</div>
+
+
+<div class="group">
+
+<button onclick="changeTheme()">🎨 Тема</button>
+
+<button onclick="settings()">⚙️ Настройки</button>
+
+</div>
+
+
+<div class="group">
+
+<button onclick="deleteText()">⌫ Удалить</button>
+
+<button onclick="enterText()">↵ Enter</button>
+
+<button onclick="spaceText()">␣ Пробел</button>
+
+<button onclick="clearText()">🗑 Очистить</button>
+
+</div>
+
+
+</div>
+
+
+<textarea id="text" readonly></textarea>
+
+
+<div class="keyboard" id="keyboard">
+
+</div>
+<script>
+
+const runes = [
+
+["ᚨ","А"],
+["ᛒ","Б"],
+["ᚹ","В"],
+["ᚷ","Г"],
+
+["ᛞ","Д"],
+["ᛖ","Е"],
+["ᛖ","Ё"],
+["ᛃ","Ж"],
+
+["ᛉ","З"],
+["ᛁ","И"],
+["ᛃ","Й"],
+["ᚲ","К"],
+
+["ᛚ","Л"],
+["ᛗ","М"],
+["ᚾ","Н"],
+["ᛟ","О"],
+
+["ᛈ","П"],
+["ᚱ","Р"],
+["ᛋ","С"],
+["ᛏ","Т"],
+
+["ᚢ","У"],
+["ᚠ","Ф"],
+["ᚺ","Х"],
+
+["ᛏᛋ","Ц"],
+["ᚲᚺ","Ч"],
+["ᛋᚺ","Ш"],
+["ᛋᚲ","Щ"],
+
+["ᛁ","Ы"],
+["ᛖ","Э"],
+
+["ᛃᚢ","Ю"],
+["ᛃᚨ","Я"],
+
+["ᛜ","НГ"]
+
+];
+
+
+let output = document.getElementById("text");
+let keyboard = document.getElementById("keyboard");
+let modeText = document.getElementById("mode");
+
+let runeMode = true;
+
+
+runes.forEach(function(r){
+
+    let key = document.createElement("div");
+
+    key.className = "key";
+
+
+    key.innerHTML = `
+
+    <div class="rune">${r[0]}</div>
+
+    <div class="letter">${r[1]}</div>
+
+    `;
+
+
+    key.onclick = function(){
+
+        if(runeMode){
+
+            output.value += r[0];
+
+        } else {
+
+            output.value += r[1];
+
+        }
+
+    };
+
+
+    keyboard.appendChild(key);
+
+
+});
+
+
+
+function switchMode(){
+
+    runeMode = !runeMode;
+
+
+    if(runeMode){
+
+        modeText.innerHTML = "Режим: Руны";
+
+    }else{
+
+        modeText.innerHTML = "Режим: Буквы";
+
+    }
+
+}
+
+</script>
+function deleteText(){
+
+    output.value = output.value.slice(0,-1);
+
+}
+
+
+function clearText(){
+
+    output.value = "";
+
+}
+
+
+function enterText(){
+
+    output.value += "\n";
+
+}
+
+
+function spaceText(){
+
+    output.value += " ";
+
+}
+
+
+function copyText(){
+
+    navigator.clipboard.writeText(output.value);
+
+    alert("Скопировано!");
+
+}
+
+
+
+function downloadTXT(){
+
+    let blob = new Blob(
+        [output.value],
+        {
+            type:"text/plain;charset=utf-8"
+        }
+    );
+
+
+    let link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = "runopisec.txt";
+
+    link.click();
+
+}
+
+
+
+function changeTheme(){
+
+    document.body.classList.toggle("light");
+
+}
+
+
+
+function downloadPNG(){
+
+    alert("PNG будет добавлен в следующей версии.");
+
+}
+
+
+function translateText(){
+
+    alert("Перевод будет добавлен в следующей версии.");
+
+}
+
+
+function favorites(){
+
+    alert("Избранные руны будут добавлены позже.");
+
+}
+
+
+function historyList(){
+
+    alert("История будет добавлена позже.");
+
+}
+
+
+function settings(){
+
+    alert("Настройки будут добавлены позже.");
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
