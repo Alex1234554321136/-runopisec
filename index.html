@@ -1,0 +1,5039 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Runopisec 2.0 — Русская руническая клавиатура</title>
+
+
+<style>
+
+/* ===== ОСНОВА ===== */
+
+*{
+    box-sizing:border-box;
+}
+
+
+body{
+
+    margin:0;
+
+    padding:20px;
+
+    min-height:100vh;
+
+    background:#111;
+
+    color:white;
+
+    font-family:Arial, sans-serif;
+
+    text-align:center;
+
+    transition:0.3s;
+
+}
+
+
+h1{
+
+    font-size:30px;
+
+    margin-bottom:5px;
+
+}
+
+
+.subtitle{
+
+    color:#aaa;
+
+    margin-bottom:20px;
+
+}
+
+
+#mode{
+
+    font-size:18px;
+
+    color:#ccc;
+
+    margin:10px;
+
+}
+
+
+/* ===== ПОЛЕ ТЕКСТА ===== */
+
+
+#text{
+
+    width:95%;
+
+    min-height:130px;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    border:2px solid #666;
+
+    background:#222;
+
+    color:white;
+
+    font-size:28px;
+
+    resize:none;
+
+}
+
+
+
+/* ===== КНОПКИ ===== */
+
+
+.toolbar{
+
+    margin-top:20px;
+
+}
+
+
+.group{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:10px;
+
+    margin-bottom:12px;
+
+}
+
+
+button{
+
+    padding:12px 15px;
+
+    border-radius:12px;
+
+    border:2px solid #777;
+
+    background:#333;
+
+    color:white;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+}
+
+
+button:hover{
+
+    transform:scale(1.05);
+
+}
+
+
+button:active{
+
+    background:#555;
+
+}
+
+
+
+/* ===== КЛАВИАТУРА ===== */
+
+
+.keyboard{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:10px;
+
+    margin-top:25px;
+
+}
+
+
+.key{
+
+    background:#222;
+
+    border:2px solid #777;
+
+    border-radius:15px;
+
+    padding:15px 5px;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+}
+
+
+.key:hover{
+
+    box-shadow:0 0 15px #888;
+
+}
+
+
+.key:active{
+
+    transform:scale(0.9);
+
+}
+
+
+.rune{
+
+    font-size:42px;
+
+}
+
+
+.letter{
+
+    margin-top:5px;
+
+    color:#bbb;
+
+    font-size:18px;
+
+}
+  /* ===== ОКНА ===== */
+
+
+.window{
+
+    display:none;
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:100%;
+
+    background:rgba(0,0,0,0.8);
+
+    z-index:100;
+
+    padding:30px;
+
+}
+
+
+
+.window-box{
+
+    background:#222;
+
+    border:2px solid #777;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    max-height:85%;
+
+    overflow:auto;
+
+}
+
+
+
+.card{
+
+    background:#333;
+
+    border:1px solid #777;
+
+    border-radius:15px;
+
+    padding:15px;
+
+    margin:10px;
+
+    font-size:20px;
+
+}
+
+
+
+/* ===== СТАТИСТИКА ===== */
+
+
+.stats{
+
+    margin-top:15px;
+
+    color:#ccc;
+
+    font-size:16px;
+
+}
+
+
+
+/* ===== ТЕМЫ ===== */
+
+
+body.light{
+
+    background:#eee;
+
+    color:#111;
+
+}
+
+
+body.light #text{
+
+    background:white;
+
+    color:black;
+
+}
+
+
+body.light .key{
+
+    background:white;
+
+    color:black;
+
+}
+
+
+body.light button{
+
+    background:white;
+
+    color:black;
+
+}
+
+
+
+body.stone{
+
+    background:#292929;
+
+}
+
+
+body.parchment{
+
+    background:#d8c39a;
+
+    color:#222;
+
+}
+
+
+body.parchment #text{
+
+    background:#f5e6c8;
+
+    color:#222;
+
+}
+
+
+
+body.wood{
+
+    background:#3b2414;
+
+}
+
+
+body.northern{
+
+    background:#071827;
+
+}
+
+
+
+/* ===== ПОЛНОЭКРАННЫЙ РЕЖИМ ===== */
+
+
+.fullscreen-text{
+
+    font-size:60px;
+
+    padding:40px;
+
+}
+
+
+
+/* ===== АДАПТАЦИЯ ДЛЯ ТЕЛЕФОНА ===== */
+
+
+@media(max-width:600px){
+
+    body{
+
+        padding:10px;
+
+    }
+
+
+    h1{
+
+        font-size:24px;
+
+    }
+
+
+    .rune{
+
+        font-size:34px;
+
+    }
+
+
+    button{
+
+        font-size:14px;
+
+        padding:10px;
+
+    }
+
+
+    #text{
+
+        font-size:22px;
+
+    }
+
+}
+
+
+
+/* ===== АНИМАЦИЯ ===== */
+
+
+@keyframes runeGlow{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+
+    50%{
+
+        transform:scale(1.15);
+
+    }
+
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+
+.animate{
+
+    animation:runeGlow 0.3s;
+
+}
+
+
+
+</style>
+
+</head>
+<body>
+
+<h1>ᚱ Runopisec 2.0</h1>
+
+<div class="subtitle">
+Русская руническая клавиатура
+</div>
+
+
+<div id="mode">
+Режим: Руны
+</div>
+
+
+<div class="toolbar">
+
+
+<div class="group">
+
+<button onclick="copyText()">
+📋 Копировать
+</button>
+
+
+<button onclick="downloadTXT()">
+💾 TXT
+</button>
+
+
+<button onclick="makeImage()">
+🖼 Картинка
+</button>
+
+
+<button onclick="changeTheme()">
+🎨 Тема
+</button>
+
+</div>
+
+
+
+<div class="group">
+
+<button onclick="switchMode()">
+🔄 Руны / Буквы
+</button>
+
+
+<button onclick="translateText()">
+🔁 Перевести
+</button>
+
+</div>
+
+
+
+<div class="group">
+
+<button onclick="saveFavorite()">
+⭐ Сохранить
+</button>
+
+
+<button onclick="openFavorites()">
+📂 Избранное
+</button>
+
+</div>
+
+
+
+<div class="group">
+
+<button onclick="saveHistory()">
+📖 В историю
+</button>
+
+
+<button onclick="openHistory()">
+🕘 История
+</button>
+
+</div>
+
+
+
+<div class="group">
+
+<button onclick="deleteText()">
+⌫ Удалить
+</button>
+
+
+<button onclick="spaceText()">
+␣ Пробел
+</button>
+
+
+<button onclick="clearText()">
+🗑 Очистить
+</button>
+
+</div>
+
+
+</div>
+
+
+
+<textarea id="text" readonly></textarea>
+
+
+
+<div class="stats">
+
+<div>
+🔤 Символов: <span id="symbols">0</span>
+</div>
+
+<div>
+📝 Слов: <span id="words">0</span>
+</div>
+
+<div>
+ᚱ Рун: <span id="runeCount">0</span>
+</div>
+
+</div>
+
+
+
+<div class="keyboard" id="keyboard"></div>
+
+
+
+
+<!-- ИЗБРАННОЕ -->
+
+
+<div class="window" id="favoritesWindow">
+
+<div class="window-box">
+
+<h2>
+⭐ Избранное
+</h2>
+
+
+<input id="favoriteSearch"
+placeholder="Поиск..."
+>
+
+
+<div id="favoritesList"></div>
+
+
+<button onclick="closeFavorites()">
+Закрыть
+</button>
+
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- ИСТОРИЯ -->
+
+
+<div class="window" id="historyWindow">
+
+<div class="window-box">
+
+<h2>
+📖 История
+</h2>
+
+
+<input id="historySearch"
+placeholder="Поиск..."
+>
+
+
+<div id="historyList"></div>
+
+
+<button onclick="closeHistory()">
+Закрыть
+</button>
+
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- НАСТРОЙКИ -->
+
+
+<div class="window" id="settingsWindow">
+
+<div class="window-box">
+
+<h2>
+⚙️ Настройки
+</h2>
+
+
+<button onclick="setTheme('dark')">
+🌙 Тёмная
+</button>
+
+
+<button onclick="setTheme('light')">
+☀️ Светлая
+</button>
+
+
+<button onclick="setTheme('stone')">
+🪨 Камень
+</button>
+
+
+<button onclick="setTheme('parchment')">
+📜 Пергамент
+</button>
+
+
+<button onclick="setTheme('wood')">
+🪵 Дерево
+</button>
+
+
+<button onclick="setTheme('northern')">
+🌌 Северное сияние
+</button>
+
+
+
+<button onclick="closeSettings()">
+Закрыть
+</button>
+
+
+</div>
+
+</div>
+
+
+
+<!-- ПОЛНОЭКРАННЫЕ РУНЫ -->
+
+
+<div class="window" id="runeView">
+
+<div class="window-box">
+
+<div id="bigRuneText"
+class="fullscreen-text">
+</div>
+
+
+<button onclick="closeRuneView()">
+Закрыть
+</button>
+
+
+</div>
+
+</div>
+<script>
+
+
+// ===== ДАННЫЕ РУН =====
+
+
+const runes = [
+
+["ᚨ","А"],
+["ᛒ","Б"],
+["ᚹ","В"],
+["ᚷ","Г"],
+
+["ᛞ","Д"],
+["ᛖ","Е"],
+["ᛖ","Ё"],
+["ᛃ","Ж"],
+
+["ᛉ","З"],
+["ᛁ","И"],
+["ᛃ","Й"],
+["ᚲ","К"],
+
+["ᛚ","Л"],
+["ᛗ","М"],
+["ᚾ","Н"],
+["ᛟ","О"],
+
+["ᛈ","П"],
+["ᚱ","Р"],
+["ᛋ","С"],
+["ᛏ","Т"],
+
+["ᚢ","У"],
+["ᚠ","Ф"],
+["ᚺ","Х"],
+
+["ᛏᛋ","Ц"],
+["ᚲᚺ","Ч"],
+["ᛋᚺ","Ш"],
+["ᛋᚲ","Щ"],
+
+["ᛁ","Ы"],
+["ᛖ","Э"],
+
+["ᛃᚢ","Ю"],
+["ᛃᚨ","Я"],
+
+["ᛜ","НГ"]
+
+];
+
+
+
+// ===== ЭЛЕМЕНТЫ =====
+
+
+const output = document.getElementById("text");
+
+const keyboard = document.getElementById("keyboard");
+
+const modeText = document.getElementById("mode");
+
+
+let runeMode = true;
+
+
+
+// ===== СТАТИСТИКА =====
+
+
+function updateStats(){
+
+    document.getElementById("symbols").innerHTML =
+    output.value.length;
+
+
+    let words = output.value.trim();
+
+    document.getElementById("words").innerHTML =
+    words ? words.split(/\s+/).length : 0;
+
+
+    document.getElementById("runeCount").innerHTML =
+    (output.value.match(/[ᚠ-ᛪ]/g)||[]).length;
+
+}
+
+
+
+
+// ===== СОЗДАНИЕ КЛАВИАТУРЫ =====
+
+
+runes.forEach(function(r){
+
+
+    let key = document.createElement("div");
+
+
+    key.className="key";
+
+
+    key.innerHTML = `
+
+    <div class="rune">
+    ${r[0]}
+    </div>
+
+    <div class="letter">
+    ${r[1]}
+    </div>
+
+    `;
+
+
+
+    key.onclick=function(){
+
+
+        if(runeMode){
+
+            output.value += r[0];
+
+        }
+
+        else{
+
+            output.value += r[1];
+
+        }
+
+
+
+        updateStats();
+
+
+        key.classList.add("animate");
+
+
+        setTimeout(()=>{
+
+            key.classList.remove("animate");
+
+        },300);
+
+
+
+    };
+
+
+
+    keyboard.appendChild(key);
+
+
+
+});
+
+
+
+
+// ===== АВТОСОХРАНЕНИЕ =====
+
+
+output.addEventListener("input",function(){
+
+    localStorage.setItem(
+        "draft",
+        output.value
+    );
+
+
+    updateStats();
+
+});
+
+
+
+// восстановление черновика
+
+
+let savedDraft =
+localStorage.getItem("draft");
+
+
+if(savedDraft){
+
+    output.value=savedDraft;
+
+    updateStats();
+
+}
+  // ===== ОСНОВНЫЕ ФУНКЦИИ =====
+
+
+
+function switchMode(){
+
+    runeMode = !runeMode;
+
+
+    if(runeMode){
+
+        modeText.innerHTML = "Режим: Руны";
+
+    }else{
+
+        modeText.innerHTML = "Режим: Буквы";
+
+    }
+
+}
+
+
+
+
+function deleteText(){
+
+    let value = output.value;
+
+
+    if(value.length > 0){
+
+        output.value = value.slice(0,-1);
+
+        updateStats();
+
+    }
+
+}
+
+
+
+
+function clearText(){
+
+    output.value = "";
+
+    updateStats();
+
+}
+
+
+
+
+function spaceText(){
+
+    output.value += " ";
+
+    updateStats();
+
+}
+
+
+
+
+// ===== КОПИРОВАНИЕ =====
+
+
+
+function copyText(){
+
+    navigator.clipboard.writeText(output.value);
+
+
+    alert("Скопировано 📋");
+
+}
+
+
+
+
+// ===== СОХРАНЕНИЕ TXT =====
+
+
+
+function downloadTXT(){
+
+
+    let blob = new Blob(
+
+        [output.value],
+
+        {
+            type:"text/plain;charset=utf-8"
+        }
+
+    );
+
+
+    let link = document.createElement("a");
+
+
+    link.href =
+    URL.createObjectURL(blob);
+
+
+    link.download =
+    "runopisec.txt";
+
+
+    link.click();
+
+}
+
+
+
+
+// ===== ТЕМЫ =====
+
+
+
+function changeTheme(){
+
+    openSettings();
+
+}
+
+
+
+
+function setTheme(theme){
+
+
+    document.body.className="";
+
+
+    if(theme!="dark"){
+
+        document.body.classList.add(theme);
+
+    }
+
+
+    localStorage.setItem(
+        "theme",
+        theme
+    );
+
+}
+
+
+
+
+// загрузка темы
+
+
+let savedTheme =
+localStorage.getItem("theme");
+
+
+if(savedTheme){
+
+    setTheme(savedTheme);
+
+}
+
+
+
+
+// ===== ОКНО НАСТРОЕК =====
+
+
+
+function openSettings(){
+
+    document.getElementById(
+        "settingsWindow"
+    ).style.display="block";
+
+}
+
+
+
+
+function closeSettings(){
+
+    document.getElementById(
+        "settingsWindow"
+    ).style.display="none";
+
+}
+  // ===== ПЕРЕВОДЧИК =====
+
+
+
+function russianToRunes(text){
+
+
+    let result = "";
+
+
+    for(let char of text.toUpperCase()){
+
+
+        let found = runes.find(
+            r => r[1] === char
+        );
+
+
+        if(found){
+
+            result += found[0];
+
+        }else{
+
+            result += char;
+
+        }
+
+
+    }
+
+
+    return result;
+
+}
+
+
+
+
+
+function runesToRussian(text){
+
+
+    let result = text;
+
+
+
+    // сложные сочетания сначала
+
+
+    result =
+    result.split("ᛃᚢ").join("Ю");
+
+
+    result =
+    result.split("ᛃᚨ").join("Я");
+
+
+    result =
+    result.split("ᛏᛋ").join("Ц");
+
+
+    result =
+    result.split("ᚲᚺ").join("Ч");
+
+
+    result =
+    result.split("ᛋᚺ").join("Ш");
+
+
+    result =
+    result.split("ᛋᚲ").join("Щ");
+
+
+
+
+
+    runes.forEach(function(r){
+
+
+        if(r[0].length===1){
+
+
+            result =
+            result.split(r[0]).join(r[1]);
+
+
+        }
+
+
+    });
+
+
+
+    return result;
+
+
+}
+
+
+
+
+
+function translateText(){
+
+
+
+    if(runeMode){
+
+
+        output.value =
+        runesToRussian(output.value);
+
+
+        runeMode=false;
+
+
+        modeText.innerHTML =
+        "Режим: Буквы";
+
+
+    }
+
+    else{
+
+
+        output.value =
+        russianToRunes(output.value);
+
+
+        runeMode=true;
+
+
+        modeText.innerHTML =
+        "Режим: Руны";
+
+
+    }
+
+
+
+    updateStats();
+
+
+    localStorage.setItem(
+        "draft",
+        output.value
+    );
+
+
+}
+  // ===== ИЗБРАННОЕ =====
+
+
+
+function saveFavorite(){
+
+
+    if(output.value.trim()===""){
+
+
+        alert("Нет текста для сохранения");
+
+        return;
+
+    }
+
+
+
+    let favorites =
+    JSON.parse(
+        localStorage.getItem("favorites")
+    ) || [];
+
+
+
+    favorites.push({
+
+        text: output.value,
+
+        date: new Date().toLocaleString(),
+
+        pinned:false
+
+    });
+
+
+
+    localStorage.setItem(
+
+        "favorites",
+
+        JSON.stringify(favorites)
+
+    );
+
+
+
+    alert("Добавлено в избранное ⭐");
+
+
+}
+
+
+
+
+
+function openFavorites(){
+
+
+    let favorites =
+    JSON.parse(
+        localStorage.getItem("favorites")
+    ) || [];
+
+
+
+    let list =
+    document.getElementById(
+        "favoritesList"
+    );
+
+
+    list.innerHTML="";
+
+
+
+    if(favorites.length===0){
+
+
+        list.innerHTML =
+        "<p>Избранное пусто</p>";
+
+
+    }
+
+
+
+
+    favorites.forEach(function(item,index){
+
+
+
+        let card =
+        document.createElement("div");
+
+
+
+        card.className="card";
+
+
+
+        card.innerHTML=`
+
+        <div>
+        ${item.pinned ? "📌 " : ""}
+        ${item.text}
+        </div>
+
+        <small>
+        ${item.date}
+        </small>
+
+
+        <br>
+
+
+        <button onclick="loadFavorite(${index})">
+        Открыть
+        </button>
+
+
+        <button onclick="pinFavorite(${index})">
+        📌
+        </button>
+
+
+        <button onclick="deleteFavorite(${index})">
+        🗑
+        </button>
+
+        `;
+
+
+
+        list.appendChild(card);
+
+
+
+    });
+
+
+
+    document.getElementById(
+        "favoritesWindow"
+    ).style.display="block";
+
+
+}
+
+
+
+
+function closeFavorites(){
+
+
+    document.getElementById(
+        "favoritesWindow"
+    ).style.display="none";
+
+
+}
+
+
+
+
+function loadFavorite(index){
+
+
+    let favorites =
+    JSON.parse(
+        localStorage.getItem("favorites")
+    ) || [];
+
+
+
+    output.value =
+    favorites[index].text;
+
+
+
+    updateStats();
+
+
+    closeFavorites();
+
+
+}
+
+
+
+
+
+function deleteFavorite(index){
+
+
+    let favorites =
+    JSON.parse(
+        localStorage.getItem("favorites")
+    ) || [];
+
+
+
+    favorites.splice(index,1);
+
+
+
+    localStorage.setItem(
+
+        "favorites",
+
+        JSON.stringify(favorites)
+
+    );
+
+
+
+    openFavorites();
+
+
+}
+
+
+
+
+function pinFavorite(index){
+
+
+    let favorites =
+    JSON.parse(
+        localStorage.getItem("favorites")
+    ) || [];
+
+
+
+    favorites[index].pinned =
+    !favorites[index].pinned;
+
+
+
+    localStorage.setItem(
+
+        "favorites",
+
+        JSON.stringify(favorites)
+
+    );
+
+
+
+    openFavorites();
+
+
+}
+  // ===== ИСТОРИЯ =====
+
+
+
+function saveHistory(){
+
+
+    if(output.value.trim()===""){
+
+
+        alert("Нет текста для сохранения");
+
+
+        return;
+
+
+    }
+
+
+
+    let history =
+
+    JSON.parse(
+
+        localStorage.getItem("history")
+
+    ) || [];
+
+
+
+    history.push({
+
+
+        text: output.value,
+
+
+        date: new Date().toLocaleString()
+
+
+    });
+
+
+
+    // максимум 50 записей
+
+
+    if(history.length>50){
+
+
+        history.shift();
+
+
+    }
+
+
+
+    localStorage.setItem(
+
+        "history",
+
+        JSON.stringify(history)
+
+    );
+
+
+
+    alert("Добавлено в историю 📖");
+
+
+}
+
+
+
+
+
+
+
+function openHistory(){
+
+
+
+    let history =
+
+    JSON.parse(
+
+        localStorage.getItem("history")
+
+    ) || [];
+
+
+
+    let list =
+
+    document.getElementById(
+
+        "historyList"
+
+    );
+
+
+
+    list.innerHTML="";
+
+
+
+
+    if(history.length===0){
+
+
+
+        list.innerHTML=
+
+        "<p>История пустая</p>";
+
+
+
+    }
+
+
+
+
+
+    history.forEach(function(item,index){
+
+
+
+        let card =
+
+        document.createElement("div");
+
+
+
+        card.className="card";
+
+
+
+        card.innerHTML=`
+
+
+        <div>
+
+        ${item.text}
+
+        </div>
+
+
+        <small>
+
+        ${item.date}
+
+        </small>
+
+
+        <br>
+
+
+        <button onclick="loadHistory(${index})">
+
+        Открыть
+
+        </button>
+
+
+        <button onclick="deleteHistory(${index})">
+
+        🗑 Удалить
+
+        </button>
+
+
+        `;
+
+
+
+        list.appendChild(card);
+
+
+
+    });
+
+
+
+
+    document.getElementById(
+
+        "historyWindow"
+
+    ).style.display="block";
+
+
+
+}
+
+
+
+
+
+
+function closeHistory(){
+
+
+
+    document.getElementById(
+
+        "historyWindow"
+
+    ).style.display="none";
+
+
+
+}
+
+
+
+
+
+
+
+function loadHistory(index){
+
+
+
+    let history =
+
+    JSON.parse(
+
+        localStorage.getItem("history")
+
+    ) || [];
+
+
+
+
+    output.value =
+
+    history[index].text;
+
+
+
+
+    updateStats();
+
+
+
+    closeHistory();
+
+
+
+}
+
+
+
+
+
+
+
+function deleteHistory(index){
+
+
+
+    let history =
+
+    JSON.parse(
+
+        localStorage.getItem("history")
+
+    ) || [];
+
+
+
+
+    history.splice(index,1);
+
+
+
+
+    localStorage.setItem(
+
+        "history",
+
+        JSON.stringify(history)
+
+    );
+
+
+
+    openHistory();
+
+
+
+}
+
+
+
+
+
+
+
+function clearHistory(){
+
+
+
+    localStorage.removeItem(
+
+        "history"
+
+    );
+
+
+
+    openHistory();
+
+
+
+}
+  // ===== ПОИСК =====
+
+
+
+function searchFavorites(){
+
+
+    let query =
+
+    document.getElementById(
+        "favoriteSearch"
+    ).value.toLowerCase();
+
+
+
+    let cards =
+
+    document.querySelectorAll(
+        "#favoritesList .card"
+    );
+
+
+
+    cards.forEach(function(card){
+
+
+
+        if(
+            card.innerText
+            .toLowerCase()
+            .includes(query)
+        ){
+
+            card.style.display="block";
+
+        }
+
+        else{
+
+            card.style.display="none";
+
+        }
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+function searchHistory(){
+
+
+    let query =
+
+    document.getElementById(
+        "historySearch"
+    ).value.toLowerCase();
+
+
+
+    let cards =
+
+    document.querySelectorAll(
+        "#historyList .card"
+    );
+
+
+
+    cards.forEach(function(card){
+
+
+
+        if(
+            card.innerText
+            .toLowerCase()
+            .includes(query)
+        ){
+
+            card.style.display="block";
+
+        }
+
+        else{
+
+            card.style.display="none";
+
+        }
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+// ===== РЕЗЕРВНАЯ КОПИЯ =====
+
+
+
+
+function exportBackup(){
+
+
+
+    let backup = {
+
+
+        favorites:
+
+        JSON.parse(
+            localStorage.getItem("favorites")
+        ) || [],
+
+
+
+        history:
+
+        JSON.parse(
+            localStorage.getItem("history")
+        ) || [],
+
+
+
+        draft:
+
+        localStorage.getItem("draft") || "",
+
+
+
+        theme:
+
+        localStorage.getItem("theme") || "dark"
+
+
+
+    };
+
+
+
+
+
+    let blob =
+
+    new Blob(
+
+        [
+
+            JSON.stringify(
+                backup,
+                null,
+                2
+            )
+
+        ],
+
+        {
+
+            type:"application/json"
+
+        }
+
+    );
+
+
+
+
+
+    let link =
+
+    document.createElement("a");
+
+
+
+    link.href =
+
+    URL.createObjectURL(blob);
+
+
+
+    link.download =
+
+    "runopisec_backup.json";
+
+
+
+    link.click();
+
+
+
+}
+
+
+
+
+
+
+
+
+function importBackup(event){
+
+
+
+    let file =
+
+    event.target.files[0];
+
+
+
+    if(!file){
+
+        return;
+
+    }
+
+
+
+
+    let reader =
+
+    new FileReader();
+
+
+
+
+
+    reader.onload=function(e){
+
+
+
+        try{
+
+
+
+            let backup =
+
+            JSON.parse(
+                e.target.result
+            );
+
+
+
+            localStorage.setItem(
+
+                "favorites",
+
+                JSON.stringify(
+                    backup.favorites || []
+                )
+
+            );
+
+
+
+            localStorage.setItem(
+
+                "history",
+
+                JSON.stringify(
+                    backup.history || []
+                )
+
+            );
+
+
+
+            localStorage.setItem(
+
+                "draft",
+
+                backup.draft || ""
+
+            );
+
+
+
+            localStorage.setItem(
+
+                "theme",
+
+                backup.theme || "dark"
+
+            );
+
+
+
+            alert(
+                "Резервная копия восстановлена ✅"
+            );
+
+
+
+            location.reload();
+
+
+
+        }
+
+
+        catch{
+
+
+            alert(
+                "Ошибка файла"
+            );
+
+
+        }
+
+
+
+    };
+
+
+
+
+    reader.readAsText(file);
+
+
+
+}
+  // ===== КАРТИНКА С РУНАМИ =====
+
+
+
+function makeImage(){
+
+
+    if(output.value.trim()===""){
+
+
+        alert("Нет текста для картинки");
+
+
+        return;
+
+    }
+
+
+
+
+
+    let canvas =
+
+    document.createElement("canvas");
+
+
+
+    canvas.width = 1000;
+
+    canvas.height = 400;
+
+
+
+
+
+    let ctx =
+
+    canvas.getContext("2d");
+
+
+
+
+
+    // фон
+
+
+    ctx.fillStyle="#222";
+
+
+    ctx.fillRect(
+
+        0,
+
+        0,
+
+        canvas.width,
+
+        canvas.height
+
+    );
+
+
+
+
+
+    // руны
+
+
+    ctx.fillStyle="white";
+
+
+    ctx.textAlign="center";
+
+
+    ctx.font="80px Arial";
+
+
+
+    ctx.fillText(
+
+        output.value,
+
+        500,
+
+        160
+
+    );
+
+
+
+
+
+    // перевод
+
+
+    ctx.font="45px Arial";
+
+
+
+    ctx.fillText(
+
+        runesToRussian(output.value),
+
+        500,
+
+        270
+
+    );
+
+
+
+
+
+
+    let link =
+
+    document.createElement("a");
+
+
+
+    link.download=
+
+    "runopisec.png";
+
+
+
+    link.href=
+
+    canvas.toDataURL();
+
+
+
+    link.click();
+
+
+
+}
+
+
+
+
+
+
+
+// ===== ПОДЕЛИТЬСЯ =====
+
+
+
+
+async function shareText(){
+
+
+
+    if(
+        navigator.share
+    ){
+
+
+        try{
+
+
+            await navigator.share({
+
+                title:
+                "Runopisec",
+
+
+                text:
+                output.value
+
+
+            });
+
+
+        }
+
+
+        catch(e){}
+
+
+
+    }
+
+
+    else{
+
+
+        copyText();
+
+
+        alert(
+            "Текст скопирован"
+        );
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+// ===== УЛУЧШЕННОЕ КОПИРОВАНИЕ =====
+
+
+
+
+async function copyText(){
+
+
+
+    if(output.value===""){
+
+
+        alert(
+            "Нет текста"
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+    try{
+
+
+        await navigator.clipboard.writeText(
+            output.value
+        );
+
+
+        alert(
+            "Скопировано 📋"
+        );
+
+
+    }
+
+
+    catch{
+
+
+        alert(
+            "Не удалось скопировать"
+        );
+
+
+    }
+
+
+
+}
+  // ===== QR-КОД =====
+
+
+
+function createQR(){
+
+
+    if(output.value.trim()===""){
+
+
+        alert(
+            "Нет текста для QR-кода"
+        );
+
+
+        return;
+
+
+    }
+
+
+
+    let qrWindow =
+
+    document.getElementById(
+        "qrWindow"
+    );
+
+
+
+    let qrBox =
+
+    document.getElementById(
+        "qrcode"
+    );
+
+
+
+    qrBox.innerHTML="";
+
+
+
+    let img =
+
+    document.createElement("img");
+
+
+
+    img.src =
+
+    "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="
+
+    +
+
+    encodeURIComponent(
+        output.value
+    );
+
+
+
+    qrBox.appendChild(img);
+
+
+
+    qrWindow.style.display="block";
+
+
+}
+
+
+
+
+
+
+function closeQR(){
+
+
+    document.getElementById(
+        "qrWindow"
+    ).style.display="none";
+
+
+}
+
+
+
+
+
+
+
+function copyQRText(){
+
+
+    copyText();
+
+
+}
+
+
+
+
+
+// ===== ОЧИСТКА ВСЕХ ДАННЫХ =====
+
+
+
+function clearAllData(){
+
+
+
+    if(
+        confirm(
+            "Удалить все сохранённые данные?"
+        )
+    ){
+
+
+        localStorage.clear();
+
+
+
+        alert(
+            "Данные удалены"
+        );
+
+
+
+        location.reload();
+
+
+    }
+
+
+
+}
+  // ===== PWA И НАСТРОЙКИ =====
+
+
+
+let deferredPrompt;
+
+
+
+window.addEventListener(
+"beforeinstallprompt",
+function(e){
+
+
+    e.preventDefault();
+
+
+    deferredPrompt = e;
+
+
+
+});
+
+
+
+
+
+function installApp(){
+
+
+    if(deferredPrompt){
+
+
+
+        deferredPrompt.prompt();
+
+
+
+        deferredPrompt.userChoice
+        .then(function(){
+
+
+            deferredPrompt=null;
+
+
+        });
+
+
+
+    }
+
+
+    else{
+
+
+        alert(
+        "Установка доступна через меню браузера"
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+// ===== СОХРАНЕНИЕ НАСТРОЕК =====
+
+
+
+function saveSettings(){
+
+
+    let settings={
+
+
+        theme:
+        localStorage.getItem("theme")
+        ||
+        "dark",
+
+
+        runeMode:
+        runeMode,
+
+
+        sound:
+        localStorage.getItem("sound")
+        ||
+        "on"
+
+
+
+    };
+
+
+
+    localStorage.setItem(
+
+        "settings",
+
+        JSON.stringify(settings)
+
+    );
+
+
+}
+
+
+
+
+
+
+
+// ===== ЗАГРУЗКА НАСТРОЕК =====
+
+
+
+
+function loadSettings(){
+
+
+
+    let settings =
+
+    JSON.parse(
+
+        localStorage.getItem("settings")
+
+    );
+
+
+
+    if(!settings){
+
+        return;
+
+    }
+
+
+
+
+
+    if(settings.theme){
+
+
+        setTheme(
+            settings.theme
+        );
+
+
+    }
+
+
+
+
+
+    if(settings.runeMode!==undefined){
+
+
+        runeMode =
+        settings.runeMode;
+
+
+
+        modeText.innerHTML =
+
+        runeMode ?
+
+        "Режим: Руны"
+
+        :
+
+        "Режим: Буквы";
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+// загружаем настройки при старте
+
+
+loadSettings();
+
+
+
+
+
+
+// сохраняем перед закрытием
+
+
+window.addEventListener(
+
+"beforeunload",
+
+function(){
+
+
+    saveSettings();
+
+
+}
+
+);
+  // ===== ЗВУК КЛАВИАТУРЫ =====
+
+
+
+let soundEnabled =
+
+localStorage.getItem("sound")
+
+!==
+
+"off";
+
+
+
+
+
+function playRuneSound(){
+
+
+    if(!soundEnabled){
+
+        return;
+
+    }
+
+
+
+    let audio =
+
+    new Audio(
+
+    "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAP//AAD//wAA"
+
+    );
+
+
+
+    audio.volume=0.2;
+
+
+    audio.play();
+
+
+
+}
+
+
+
+
+
+
+function toggleSound(){
+
+
+    soundEnabled =
+    !soundEnabled;
+
+
+
+    localStorage.setItem(
+
+        "sound",
+
+        soundEnabled ?
+
+        "on"
+
+        :
+
+        "off"
+
+    );
+
+
+
+    alert(
+
+        soundEnabled ?
+
+        "Звук включён 🔊"
+
+        :
+
+        "Звук выключен 🔇"
+
+    );
+
+
+}
+
+
+
+
+
+
+
+// ===== ЛЮБИМЫЕ РУНЫ =====
+
+
+
+
+let favoriteRunes =
+
+JSON.parse(
+
+localStorage.getItem("favoriteRunes")
+
+)
+
+||
+
+[];
+
+
+
+
+
+
+
+
+function addFavoriteRune(rune){
+
+
+
+    if(
+
+        !favoriteRunes.includes(rune)
+
+    ){
+
+
+        favoriteRunes.push(rune);
+
+
+
+        localStorage.setItem(
+
+            "favoriteRunes",
+
+            JSON.stringify(
+                favoriteRunes
+            )
+
+        );
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+function removeFavoriteRune(rune){
+
+
+
+    favoriteRunes =
+
+    favoriteRunes.filter(
+
+        r => r !== rune
+
+    );
+
+
+
+    localStorage.setItem(
+
+        "favoriteRunes",
+
+        JSON.stringify(
+            favoriteRunes
+        )
+
+    );
+
+
+}
+
+
+
+
+
+
+
+function showFavoriteRunes(){
+
+
+    let box =
+
+    document.getElementById(
+        "favoriteRunes"
+    );
+
+
+
+    if(!box){
+
+        return;
+
+    }
+
+
+
+
+    box.innerHTML="";
+
+
+
+
+    favoriteRunes.forEach(function(r){
+
+
+
+        let button =
+
+        document.createElement("button");
+
+
+
+        button.innerHTML=r;
+
+
+
+        button.onclick=function(){
+
+
+
+            output.value += r;
+
+
+            updateStats();
+
+
+            playRuneSound();
+
+
+        };
+
+
+
+        box.appendChild(button);
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+// обновление при загрузке
+
+
+showFavoriteRunes();
+
+
+
+
+
+
+// ===== ЭФФЕКТ НАЖАТИЯ =====
+
+
+
+
+function runeEffect(element){
+
+
+
+    element.classList.add(
+        "animate"
+    );
+
+
+
+    setTimeout(function(){
+
+
+        element.classList.remove(
+            "animate"
+        );
+
+
+    },300);
+
+
+
+}
+  // ===== СТАТИСТИКА ПРОЕКТА =====
+
+
+
+let appStats =
+
+JSON.parse(
+
+localStorage.getItem("appStats")
+
+)
+
+||
+
+{
+
+    texts:0,
+
+    images:0,
+
+    translations:0,
+
+    symbols:0
+
+};
+
+
+
+
+
+
+
+function saveStats(){
+
+
+    localStorage.setItem(
+
+        "appStats",
+
+        JSON.stringify(appStats)
+
+    );
+
+
+}
+
+
+
+
+
+
+
+function updateAppStats(){
+
+
+    document.getElementById(
+        "symbols"
+    ).innerHTML =
+    output.value.length;
+
+
+    appStats.symbols =
+    output.value.length;
+
+
+
+    saveStats();
+
+
+}
+
+
+
+
+
+
+
+function countTextCreated(){
+
+
+    appStats.texts++;
+
+
+    saveStats();
+
+
+}
+
+
+
+
+
+
+
+function countImageCreated(){
+
+
+    appStats.images++;
+
+
+    saveStats();
+
+
+}
+
+
+
+
+
+
+
+function countTranslation(){
+
+
+    appStats.translations++;
+
+
+    saveStats();
+
+
+}
+
+
+
+
+
+
+
+function openStatistics(){
+
+
+
+    alert(
+
+    "📊 Статистика Runopisec\n\n"
+
+    +
+
+    "📝 Текстов: "
+
+    +
+
+    appStats.texts
+
+    +
+
+    "\n\n🖼 Картинок: "
+
+    +
+
+    appStats.images
+
+    +
+
+    "\n\n🔄 Переводов: "
+
+    +
+
+    appStats.translations
+
+    +
+
+    "\n\n🔤 Символов: "
+
+    +
+
+    appStats.symbols
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+// ===== ДОПОЛНИТЕЛЬНОЕ СОХРАНЕНИЕ =====
+
+
+
+output.addEventListener(
+
+"input",
+
+function(){
+
+
+    updateAppStats();
+
+
+}
+
+);
+  // ===== ЭКРАН ЗАГРУЗКИ =====
+
+
+
+window.addEventListener(
+
+"load",
+
+function(){
+
+
+
+    let splash =
+
+    document.getElementById(
+        "splash"
+    );
+
+
+
+    if(splash){
+
+
+
+        setTimeout(function(){
+
+
+            splash.style.opacity="0";
+
+
+
+            setTimeout(function(){
+
+
+                splash.style.display="none";
+
+
+            },500);
+
+
+
+        },1200);
+
+
+
+    }
+
+
+
+});
+  // ===== ПОЛНОЭКРАННЫЙ РЕЖИМ =====
+
+
+
+function openFullscreen(){
+
+
+    let element =
+    document.documentElement;
+
+
+
+    if(element.requestFullscreen){
+
+
+        element.requestFullscreen();
+
+
+    }
+
+    else if(element.webkitRequestFullscreen){
+
+
+        element.webkitRequestFullscreen();
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+function exitFullscreen(){
+
+
+
+    if(document.exitFullscreen){
+
+
+        document.exitFullscreen();
+
+
+    }
+
+    else if(document.webkitExitFullscreen){
+
+
+        document.webkitExitFullscreen();
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+// ===== ПРОСМОТР РУН НА ВЕСЬ ЭКРАН =====
+
+
+
+function openRuneView(){
+
+
+
+    if(output.value.trim()===""){
+
+
+        alert(
+            "Нет текста"
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+    document.getElementById(
+        "bigRuneText"
+    ).innerHTML = output.value;
+
+
+
+
+    document.getElementById(
+        "runeView"
+    ).style.display="block";
+
+
+
+}
+
+
+
+
+
+
+
+function closeRuneView(){
+
+
+
+    document.getElementById(
+        "runeView"
+    ).style.display="none";
+
+
+
+}
+
+
+
+
+
+
+
+// ===== ПОЛУЧЕНИЕ ТЕКСТА =====
+
+
+
+function getCurrentText(){
+
+
+    return output.value;
+
+
+}
+
+
+
+
+
+
+
+// ===== ПЕЧАТЬ =====
+
+
+
+function printRunes(){
+
+
+
+    let text =
+    output.value;
+
+
+
+    let win =
+    window.open("");
+
+
+
+    win.document.write(`
+
+    <html>
+
+    <body style="
+    text-align:center;
+    font-size:60px;
+    padding:40px;
+    ">
+
+    ${text}
+
+    </body>
+
+    </html>
+
+    `);
+
+
+
+    win.print();
+
+
+
+}
+  // ===== НАЗВАНИЯ И КАТЕГОРИИ =====
+
+
+
+function saveFavorite(){
+
+    if(output.value.trim()===""){
+
+        alert("Нет текста для сохранения");
+
+        return;
+
+    }
+
+
+
+    let title = prompt(
+        "Название записи:",
+        "Без названия"
+    );
+
+
+    let category = prompt(
+        "Категория:",
+        "Руны"
+    );
+
+
+
+    let favorites =
+
+    JSON.parse(
+
+        localStorage.getItem("favorites")
+
+    ) || [];
+
+
+
+    favorites.push({
+
+        title:title || "Без названия",
+
+        category:category || "Руны",
+
+        text:output.value,
+
+        date:new Date().toLocaleString(),
+
+        pinned:false
+
+    });
+
+
+
+    localStorage.setItem(
+
+        "favorites",
+
+        JSON.stringify(favorites)
+
+    );
+
+
+
+    alert(
+        "Сохранено ⭐"
+    );
+
+
+}
+
+
+
+
+
+
+
+function pinFavorite(index){
+
+
+    let favorites =
+
+    JSON.parse(
+
+        localStorage.getItem("favorites")
+
+    ) || [];
+
+
+
+    favorites[index].pinned =
+
+    !favorites[index].pinned;
+
+
+
+    localStorage.setItem(
+
+        "favorites",
+
+        JSON.stringify(favorites)
+
+    );
+
+
+
+    openFavorites();
+
+
+}
+
+
+
+
+
+
+
+function sortFavorites(){
+
+
+    let favorites =
+
+    JSON.parse(
+
+        localStorage.getItem("favorites")
+
+    ) || [];
+
+
+
+    favorites.sort(
+
+        (a,b)=>{
+
+            return b.pinned - a.pinned;
+
+        }
+
+    );
+
+
+
+    localStorage.setItem(
+
+        "favorites",
+
+        JSON.stringify(favorites)
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+function filterCategory(category){
+
+
+    let favorites =
+
+    JSON.parse(
+
+        localStorage.getItem("favorites")
+
+    ) || [];
+
+
+
+    return favorites.filter(
+
+        item =>
+
+        item.category===category
+
+    );
+
+
+}
+  // ===== РАСШИРЕННЫЙ ПОИСК =====
+
+
+
+function advancedSearch(list, query){
+
+
+    query = query.toLowerCase();
+
+
+
+    return list.filter(function(item){
+
+
+        return (
+
+            item.text
+            .toLowerCase()
+            .includes(query)
+
+            ||
+
+            item.title
+            .toLowerCase()
+            .includes(query)
+
+            ||
+
+            item.category
+            .toLowerCase()
+            .includes(query)
+
+        );
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+function searchFavoritesAdvanced(){
+
+
+    let query =
+
+    document.getElementById(
+        "favoriteSearch"
+    ).value;
+
+
+
+    let favorites =
+
+    JSON.parse(
+
+        localStorage.getItem("favorites")
+
+    ) || [];
+
+
+
+    let result =
+
+    advancedSearch(
+        favorites,
+        query
+    );
+
+
+
+    let box =
+
+    document.getElementById(
+        "favoritesList"
+    );
+
+
+
+    box.innerHTML="";
+
+
+
+    result.forEach(function(item){
+
+
+
+        let card =
+
+        document.createElement("div");
+
+
+
+        card.className="card";
+
+
+
+        card.innerHTML=`
+
+
+        ${item.pinned ? "📌" : ""}
+
+        <b>${item.title}</b>
+
+        <br>
+
+        ${item.text}
+
+        <br>
+
+        <small>
+
+        ${item.category}
+
+        </small>
+
+
+        `;
+
+
+
+        box.appendChild(card);
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+
+// ===== КАТЕГОРИИ =====
+
+
+
+
+function getCategories(){
+
+
+
+    let favorites =
+
+    JSON.parse(
+
+        localStorage.getItem("favorites")
+
+    ) || [];
+
+
+
+    let categories=[];
+
+
+
+    favorites.forEach(function(item){
+
+
+        if(
+
+            !categories.includes(
+                item.category
+            )
+
+        ){
+
+
+            categories.push(
+                item.category
+            );
+
+
+        }
+
+
+    });
+
+
+
+    return categories;
+
+
+}
+
+
+
+
+
+
+
+function showCategories(){
+
+
+
+    let categories =
+    getCategories();
+
+
+
+    let text="📂 Категории:\n\n";
+
+
+
+    categories.forEach(function(c){
+
+
+        text +=
+        "• "
+        +
+        c
+        +
+        "\n";
+
+
+    });
+
+
+
+    alert(text);
+
+
+
+}
+
+
+
+
+
+
+
+// ===== ЛЮБИМЫЕ РУНЫ =====
+
+
+
+
+function addRuneToFavorites(rune){
+
+
+
+    let favorites =
+
+    JSON.parse(
+
+        localStorage.getItem("favoriteRunes")
+
+    ) || [];
+
+
+
+    if(
+        !favorites.includes(rune)
+    ){
+
+
+        favorites.push(rune);
+
+
+
+        localStorage.setItem(
+
+            "favoriteRunes",
+
+            JSON.stringify(favorites)
+
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+function removeRuneFromFavorites(rune){
+
+
+
+    let favorites =
+
+    JSON.parse(
+
+        localStorage.getItem("favoriteRunes")
+
+    ) || [];
+
+
+
+    favorites =
+
+    favorites.filter(
+
+        r => r !== rune
+
+    );
+
+
+
+    localStorage.setItem(
+
+        "favoriteRunes",
+
+        JSON.stringify(favorites)
+
+    );
+
+
+}
+  // ===== ЗАЩИТА ЗАПИСЕЙ =====
+
+
+
+let privateSettings =
+
+JSON.parse(
+
+localStorage.getItem("privateSettings")
+
+)
+
+||
+
+{
+
+    enabled:false,
+
+    password:""
+
+};
+
+
+
+
+
+
+
+function enablePrivateMode(){
+
+
+
+    let pass = prompt(
+
+        "Создайте пароль для скрытых записей:"
+
+    );
+
+
+
+    if(!pass){
+
+        return;
+
+    }
+
+
+
+    privateSettings.enabled=true;
+
+
+    privateSettings.password=pass;
+
+
+
+    localStorage.setItem(
+
+        "privateSettings",
+
+        JSON.stringify(privateSettings)
+
+    );
+
+
+
+    alert(
+
+        "Защита включена 🔐"
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+function disablePrivateMode(){
+
+
+
+    privateSettings.enabled=false;
+
+
+    privateSettings.password="";
+
+
+
+    localStorage.setItem(
+
+        "privateSettings",
+
+        JSON.stringify(privateSettings)
+
+    );
+
+
+
+    alert(
+
+        "Защита отключена"
+
+    );
+
+
+}
+
+
+
+
+
+
+
+function checkPrivateAccess(){
+
+
+
+    if(!privateSettings.enabled){
+
+
+        return true;
+
+
+    }
+
+
+
+    let pass = prompt(
+
+        "Введите пароль:"
+
+    );
+
+
+
+    if(pass===privateSettings.password){
+
+
+        return true;
+
+
+    }
+
+
+
+    alert(
+
+        "Неверный пароль"
+
+    );
+
+
+
+    return false;
+
+
+}
+
+
+
+
+
+
+
+function openPrivateFavorites(){
+
+
+
+    if(
+
+        checkPrivateAccess()
+
+    ){
+
+
+        openFavorites();
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+function savePrivateText(){
+
+
+
+    if(output.value.trim()===""){
+
+
+        alert(
+
+            "Нет текста"
+
+        );
+
+
+        return;
+
+
+    }
+
+
+
+    let privateTexts =
+
+
+    JSON.parse(
+
+        localStorage.getItem("privateTexts")
+
+    )
+
+    || [];
+
+
+
+    privateTexts.push({
+
+
+        text:output.value,
+
+
+        date:new Date().toLocaleString()
+
+
+    });
+
+
+
+    localStorage.setItem(
+
+        "privateTexts",
+
+        JSON.stringify(privateTexts)
+
+    );
+
+
+
+    alert(
+
+        "Сохранено в защищённый раздел 🔐"
+
+    );
+
+
+}
+  // ===== УПРАВЛЕНИЕ ХРАНИЛИЩЕМ =====
+
+function optimizeStorage() {
+
+    let history =
+        JSON.parse(
+            localStorage.getItem("history")
+        ) || [];
+
+    // оставляем последние 100 записей
+    if (history.length > 100) {
+        history = history.slice(history.length - 100);
+
+        localStorage.setItem(
+            "history",
+            JSON.stringify(history)
+        );
+    }
+
+    let favorites =
+        JSON.parse(
+            localStorage.getItem("favorites")
+        ) || [];
+
+    // удаляем полностью пустые записи
+    favorites = favorites.filter(item =>
+        item &&
+        item.text &&
+        item.text.trim() !== ""
+    );
+
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(favorites)
+    );
+
+}
+
+
+
+
+
+
+// ===== АВТОМАТИЧЕСКАЯ ОЧИСТКА =====
+
+function cleanOldHistory(days = 90) {
+
+    let history =
+        JSON.parse(
+            localStorage.getItem("history")
+        ) || [];
+
+    let now = Date.now();
+
+    history = history.filter(item => {
+
+        if (!item.date)
+            return true;
+
+        let time = new Date(item.date).getTime();
+
+        if (isNaN(time))
+            return true;
+
+        return (
+            now - time <
+            days * 24 * 60 * 60 * 1000
+        );
+
+    });
+
+    localStorage.setItem(
+        "history",
+        JSON.stringify(history)
+    );
+
+}
+
+
+
+
+
+
+// ===== ИНФОРМАЦИЯ О ПАМЯТИ =====
+
+function storageInfo() {
+
+    let used = 0;
+
+    for (let key in localStorage) {
+
+        if (
+            localStorage.hasOwnProperty(key)
+        ) {
+
+            used +=
+                localStorage[key].length;
+
+        }
+
+    }
+
+    alert(
+        "Использовано примерно: "
+        +
+        (used / 1024).toFixed(2)
+        +
+        " КБ"
+    );
+
+}
+
+
+
+
+
+
+// ===== ЗАПУСК ПРИ ЗАГРУЗКЕ =====
+
+window.addEventListener("load", () => {
+
+    optimizeStorage();
+
+    cleanOldHistory();
+
+});
+  // ===== ИМПОРТ И ЭКСПОРТ ПРОЕКТА =====
+
+
+
+function exportProject(){
+
+
+    let backup = {
+
+        favorites:
+        JSON.parse(
+            localStorage.getItem("favorites")
+        ) || [],
+
+        history:
+        JSON.parse(
+            localStorage.getItem("history")
+        ) || [],
+
+        privateTexts:
+        JSON.parse(
+            localStorage.getItem("privateTexts")
+        ) || [],
+
+        favoriteRunes:
+        JSON.parse(
+            localStorage.getItem("favoriteRunes")
+        ) || [],
+
+        settings:
+        JSON.parse(
+            localStorage.getItem("settings")
+        ) || {},
+
+        statistics:
+        JSON.parse(
+            localStorage.getItem("appStats")
+        ) || {},
+
+        version:"Runopisec 2.0",
+
+        date:new Date().toLocaleString()
+
+    };
+
+
+
+    let blob = new Blob(
+
+        [
+            JSON.stringify(
+                backup,
+                null,
+                2
+            )
+        ],
+
+        {
+            type:"application/json"
+        }
+
+    );
+
+
+
+    let link =
+    document.createElement("a");
+
+
+
+    link.href =
+    URL.createObjectURL(blob);
+
+
+
+    link.download =
+    "Runopisec_Backup.json";
+
+
+
+    link.click();
+
+}
+
+
+
+
+
+
+
+function importProject(file){
+
+
+    if(!file) return;
+
+
+
+    let reader =
+    new FileReader();
+
+
+
+    reader.onload=function(e){
+
+
+        try{
+
+
+            let backup =
+            JSON.parse(e.target.result);
+
+
+
+            if(backup.favorites)
+                localStorage.setItem(
+                    "favorites",
+                    JSON.stringify(backup.favorites)
+                );
+
+
+
+            if(backup.history)
+                localStorage.setItem(
+                    "history",
+                    JSON.stringify(backup.history)
+                );
+
+
+
+            if(backup.privateTexts)
+                localStorage.setItem(
+                    "privateTexts",
+                    JSON.stringify(backup.privateTexts)
+                );
+
+
+
+            if(backup.favoriteRunes)
+                localStorage.setItem(
+                    "favoriteRunes",
+                    JSON.stringify(backup.favoriteRunes)
+                );
+
+
+
+            if(backup.settings)
+                localStorage.setItem(
+                    "settings",
+                    JSON.stringify(backup.settings)
+                );
+
+
+
+            if(backup.statistics)
+                localStorage.setItem(
+                    "appStats",
+                    JSON.stringify(backup.statistics)
+                );
+
+
+
+            alert(
+                "Резервная копия успешно восстановлена ✅"
+            );
+
+
+
+            location.reload();
+
+
+        }
+
+        catch{
+
+
+            alert(
+                "Не удалось открыть резервную копию."
+            );
+
+
+        }
+
+
+    };
+
+
+
+    reader.readAsText(file);
+
+}
+
+
+
+
+
+
+
+// ===== ПРОВЕРКА ВЕРСИИ =====
+
+
+
+const APP_VERSION =
+"Runopisec 2.0";
+
+
+
+console.log(
+"Запущен " + APP_VERSION
+);
+  // =====================================================
+// КРАСИВЫЕ УВЕДОМЛЕНИЯ И АНИМАЦИИ
+// =====================================================
+
+
+
+function showToast(message, duration = 2500) {
+
+    let toast = document.createElement("div");
+
+    toast.className = "toast";
+
+    toast.innerText = message;
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.add("show");
+    });
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+        setTimeout(() => {
+
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+
+        }, 300);
+
+    }, duration);
+
+}
+
+
+
+
+
+
+function vibrate(ms = 20) {
+
+    if (navigator.vibrate) {
+
+        navigator.vibrate(ms);
+
+    }
+
+}
+
+
+
+
+
+
+function keyEffect(element) {
+
+    if (!element) return;
+
+    element.classList.add("pressed");
+
+    setTimeout(() => {
+
+        element.classList.remove("pressed");
+
+    }, 150);
+
+}
+
+
+
+
+
+
+function celebrate() {
+
+    for (let i = 0; i < 30; i++) {
+
+        let particle = document.createElement("div");
+
+        particle.className = "particle";
+
+        particle.style.left = Math.random() * 100 + "vw";
+
+        particle.style.animationDelay =
+            (Math.random() * 0.5) + "s";
+
+        document.body.appendChild(particle);
+
+        setTimeout(() => {
+
+            particle.remove();
+
+        }, 3000);
+
+    }
+
+}
+
+
+
+
+
+
+function successMessage(text) {
+
+    showToast("✅ " + text);
+
+    vibrate(30);
+
+}
+
+
+
+
+
+
+function errorMessage(text) {
+
+    showToast("❌ " + text);
+
+    vibrate([40,40,40]);
+
+}
+
+
+
+
+
+
+function infoMessage(text) {
+
+    showToast("ℹ️ " + text);
+
+}
+
+
+
+
+
+
+console.log("UI Animation Module Loaded");
+ // =====================================================
+// PWA И ОФЛАЙН-РЕЖИМ
+// =====================================================
+
+let installPrompt = null;
+
+
+
+window.addEventListener(
+    "beforeinstallprompt",
+    (event) => {
+
+        event.preventDefault();
+
+        installPrompt = event;
+
+        console.log(
+            "Установка приложения доступна"
+        );
+
+    }
+);
+
+
+
+
+
+
+async function installRunopisec(){
+
+    if(!installPrompt){
+
+        infoMessage(
+            "Установить приложение можно через меню браузера."
+        );
+
+        return;
+    }
+
+    installPrompt.prompt();
+
+    await installPrompt.userChoice;
+
+    installPrompt = null;
+
+}
+
+
+
+
+
+
+
+window.addEventListener(
+
+    "appinstalled",
+
+    () => {
+
+        successMessage(
+            "Runopisec успешно установлен!"
+        );
+
+    }
+
+);
+
+
+
+
+
+
+
+// =====================================================
+// ПРОВЕРКА СОЕДИНЕНИЯ
+// =====================================================
+
+function updateOnlineStatus(){
+
+    if(navigator.onLine){
+
+        infoMessage(
+            "Интернет подключён 🌐"
+        );
+
+    }else{
+
+        infoMessage(
+            "Оффлайн режим 📱"
+        );
+
+    }
+
+}
+
+
+
+window.addEventListener(
+    "online",
+    updateOnlineStatus
+);
+
+window.addEventListener(
+    "offline",
+    updateOnlineStatus
+);
+
+
+
+
+
+
+// =====================================================
+// РЕГИСТРАЦИЯ SERVICE WORKER
+// =====================================================
+
+if(
+
+    "serviceWorker" in navigator
+
+){
+
+    window.addEventListener(
+
+        "load",
+
+        () => {
+
+            navigator.serviceWorker
+            .register("sw.js")
+
+            .then(() => {
+
+                console.log(
+                    "Service Worker зарегистрирован"
+                );
+
+            })
+
+            .catch((error) => {
+
+                console.log(error);
+
+            });
+
+        }
+
+    );
+
+}
+  // =====================================================
+// Runopisec 2.0
+// Финальная оптимизация
+// =====================================================
+
+
+
+function initializeRunopisec(){
+
+    console.log("Runopisec 2.0 запущен");
+
+    updateStats();
+
+    loadSettings();
+
+    showFavoriteRunes();
+
+    optimizeStorage();
+
+    cleanOldHistory();
+
+}
+
+
+
+// =====================================================
+// ОБРАБОТКА ОШИБОК
+// =====================================================
+
+window.onerror=function(message){
+
+    console.log("Ошибка:",message);
+
+};
+
+
+
+// =====================================================
+// АВТОСОХРАНЕНИЕ
+// =====================================================
+
+setInterval(function(){
+
+    localStorage.setItem(
+
+        "draft",
+
+        output.value
+
+    );
+
+},5000);
+
+
+
+// =====================================================
+// ГОРЯЧИЕ КЛАВИШИ
+// =====================================================
+
+document.addEventListener(
+
+"keydown",
+
+function(e){
+
+    if(e.ctrlKey && e.key==="s"){
+
+        e.preventDefault();
+
+        downloadTXT();
+
+    }
+
+
+    if(e.ctrlKey && e.key==="c"){
+
+        copyText();
+
+    }
+
+});
+
+
+
+// =====================================================
+// ЗАПУСК
+// =====================================================
+
+window.addEventListener(
+
+"load",
+
+initializeRunopisec
+
+);
+
+
+
+// =====================================================
+// КОНЕЦ ПРОЕКТА
+// =====================================================
+
+console.log(
+"Runopisec 2.0 успешно загружен"
+);
