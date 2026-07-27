@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ᚱ Рунописец</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Рунописец">
+
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+
+body{
+
+    margin:0;
+    padding:20px;
+
+    min-height:100vh;
+
+    background:#111;
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    text-align:center;
+
+    transition:0.3s;
+
+}
+
+
+
+body.light{
+
+    background:#eee;
+    color:#111;
+
+}
+
+
+
+h1{
+
+    font-size:28px;
+    margin-bottom:10px;
+
+}
+
+
+
+#modeText{
+
+    font-size:18px;
+    margin:10px;
+
+}
+
+
+
+textarea{
+
+    width:100%;
+    max-width:700px;
+
+    height:140px;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    border:2px solid #555;
+
+    background:#000;
+
+    color:white;
+
+    font-size:22px;
+
+    resize:none;
+
+}
+
+
+
+.light textarea{
+
+    background:white;
+    color:black;
+
+}
+
+
+
+.toolbar{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:8px;
+
+    margin:15px auto;
+
+    max-width:900px;
+
+}
+
+
+
+button{
+
+    padding:10px 14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#333;
+
+    color:white;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+}
+
+
+
+button:active{
+
+    transform:scale(0.95);
+
+}
+
+
+
+.light button{
+
+    background:#ddd;
+    color:black;
+
+}
+
+
+
+.keyboard{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(65px,1fr));
+
+    gap:10px;
+
+    max-width:900px;
+
+    margin:20px auto;
+
+}
+
+
+
+.key{
+
+    min-height:80px;
+
+    border-radius:12px;
+
+    background:#222;
+
+    border:1px solid #555;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+
+.light .key{
+
+    background:white;
+    border-color:#aaa;
+
+}
+
+
+
+.rune{
+
+    font-size:38px;
+
+    line-height:40px;
+
+}
+
+
+
+.letter{
+
+    font-size:18px;
+
+    opacity:0.8;
+
+}
+
+
+
+.smallRune .rune{
+
+    font-size:22px;
+
+}
+
+
+
+.smallRune .letter{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+}
+
+
+.hidden{
+
+    display:none;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>ᚱ Рунописец</h1>
+
+
+<div id="modeText">
+Режим: Руны
+</div>
+
+
+
+<textarea id="text" placeholder="Введите текст..."></textarea>
+
+
+
+<div class="toolbar">
+
+<button onclick="copyText()">📋 Копировать</button>
+
+<button onclick="downloadTXT()">📄 TXT</button>
+
+<button onclick="changeTheme()">🌙 Тема</button>
+
+<button onclick="switchMode()">🔄 Режим</button>
+
+<button onclick="translateText()">🔤 Перевод</button>
+
+</div>
+
+
+
+<div class="toolbar">
+
+<button onclick="saveFavorite()">⭐ Сохранить</button>
+
+<button onclick="showFavorites()">⭐ Избранное</button>
+
+<button onclick="saveHistory()">🕘 В историю</button>
+
+<button onclick="showHistory()">📜 История</button>
+
+<button onclick="clearHistory()">🗑 Очистить историю</button>
+
+</div>
+
+
+
+<div class="toolbar">
+
+<button onclick="deleteText()">⌫ Удалить</button>
+
+<button onclick="spaceText()">␣ Пробел</button>
+
+<button onclick="enterText()">↵ Enter</button>
+
+<button onclick="clearText()">🗑 Очистить</button>
+
+</div>
+
+
+
+<div id="developerButton" class="toolbar hidden">
+
+<button onclick="openDeveloper()">
+⚙️ Режим разработчика
+</button>
+
+</div>
+
+
+
+<div class="keyboard" id="keyboard"></div>
+<script>
+
+// ===== РУНЫ =====
+
+const runes = [
+
+["ᚨ","А"],
+["ᛒ","Б"],
+["ᚹ","В"],
+["ᚷ","Г"],
+
+["ᛞ","Д"],
+["ᛖ","Е"],
+["ᛖᛖ","Ё"],
+["ᚦ","Ж"],
+
+["ᛉ","З"],
+["ᛁ","И"],
+["ᛁᛃ","Й"],
+["ᚲ","К"],
+
+["ᛚ","Л"],
+["ᛗ","М"],
+["ᚾ","Н"],
+["ᛟ","О"],
+
+["ᛈ","П"],
+["ᚱ","Р"],
+["ᛋ","С"],
+["ᛏ","Т"],
+
+["ᚢ","У"],
+["ᚠ","Ф"],
+["ᚺ","Х"],
+
+["ᛏᛋ","Ц"],
+["ᚦᚲ","Ч"],
+["ᚦᛋ","Ш"],
+["ᚦᛋᚲ","Щ"],
+
+["ᛁᛁ","Ы"],
+["ᛖᛃ","Э"],
+
+["ᛃᚢ","Ю"],
+["ᛃᚨ","Я"],
+
+["ᛜ","НГ"]
+
+];
+
+
+
+// ===== КЛАВИАТУРА =====
+
+
+const keyboard =
+document.getElementById("keyboard");
+
+
+let runeMode = true;
+
+
+
+function createKeyboard(){
+
+    keyboard.innerHTML="";
+
+
+    runes.forEach(function(item){
+
+
+        let key =
+        document.createElement("button");
+
+
+        key.className="key";
+
+
+        key.innerHTML=
+
+        `
+        <div class="rune">${item[0]}</div>
+        <div class="letter">${item[1]}</div>
+        `;
+
+
+
+        key.onclick=function(){
+
+
+            if(runeMode){
+
+                addText(item[0]);
+
+            }
+            else{
+
+                addText(item[1]);
+
+            }
+
+
+        };
+
+
+
+        keyboard.appendChild(key);
+
+
+    });
+
+
+}
+
+
+
+
+// ===== ТЕКСТ =====
+
+
+const output =
+document.getElementById("text");
+
+
+
+function addText(value){
+
+    output.value += value;
+
+    saveCurrent();
+
+}
+
+
+
+function deleteText(){
+
+    output.value =
+    output.value.slice(0,-1);
+
+    saveCurrent();
+
+}
+
+
+
+function clearText(){
+
+    output.value="";
+
+    saveCurrent();
+
+}
+
+
+
+function spaceText(){
+
+    output.value += " ";
+
+    saveCurrent();
+
+}
+
+
+
+function enterText(){
+
+    output.value += "\n";
+
+    saveCurrent();
+
+}
+
+
+
+
+// ===== СОХРАНЕНИЕ =====
+
+
+function saveCurrent(){
+
+    localStorage.setItem(
+        "runopisec_text",
+        output.value
+    );
+
+}
+
+
+
+function loadCurrent(){
+
+    let saved =
+    localStorage.getItem(
+        "runopisec_text"
+    );
+
+
+    if(saved){
+
+        output.value=saved;
+
+    }
+
+}
+
+
+
+
+// ===== РЕЖИМ РУНЫ / БУКВЫ =====
+
+
+function switchMode(){
+
+
+    runeMode=!runeMode;
+
+
+    document.getElementById(
+        "modeText"
+    ).innerText =
+
+
+    runeMode
+
+    ?
+
+    "Режим: Руны"
+
+    :
+
+    "Режим: Буквы";
+
+
+
+    keyboard.classList.toggle(
+        "smallRune",
+        !runeMode
+    );
+
+
+}
+
+
+
+
+// запуск клавиатуры
+
+createKeyboard();
+
+loadCurrent();
+
+
+</script>
+<script>
+
+
+// ===== КОПИРОВАНИЕ =====
+
+function copyText(){
+
+    navigator.clipboard.writeText(output.value)
+
+    .then(function(){
+
+        alert("Текст скопирован");
+
+    })
+
+    .catch(function(){
+
+        alert("Не удалось скопировать");
+
+    });
+
+}
+
+
+
+// ===== ЭКСПОРТ TXT =====
+
+
+function downloadTXT(){
+
+    let file =
+    new Blob(
+        [output.value],
+        {
+            type:"text/plain;charset=utf-8"
+        }
+    );
+
+
+    let link =
+    document.createElement("a");
+
+
+    link.href =
+    URL.createObjectURL(file);
+
+
+    link.download =
+    "runopisec.txt";
+
+
+    link.click();
+
+
+}
+
+
+
+// ===== ТЕМА =====
+
+
+function changeTheme(){
+
+    document.body.classList.toggle(
+        "light"
+    );
+
+}
+
+
+
+// ===== ПЕРЕВОД =====
+
+
+// Сначала сложные сочетания
+
+const runePairs = [
+
+["ᛜ","НГ"],
+["ᛃᚢ","Ю"],
+["ᛃᚨ","Я"],
+["ᛏᛋ","Ц"],
+["ᚦᚲ","Ч"],
+["ᚦᛋ","Ш"],
+["ᚦᛋᚲ","Щ"]
+
+];
+
+
+
+
+// Руны -> русский
+
+function runesToRussian(text){
+
+
+    let result=text;
+
+
+
+    runePairs.forEach(function(pair){
+
+        result =
+        result.split(pair[0])
+        .join(pair[1]);
+
+    });
+
+
+
+    runes.forEach(function(item){
+
+
+        result =
+        result.split(item[0])
+        .join(item[1]);
+
+
+    });
+
+
+
+    return result;
+
+
+}
+
+
+
+
+// Русский -> руны
+
+
+function russianToRunes(text){
+
+
+    let result =
+    text.toUpperCase();
+
+
+
+    // длинные сначала
+
+    runes
+    .slice()
+    .reverse()
+    .forEach(function(item){
+
+
+        result =
+        result.split(item[1])
+        .join(item[0]);
+
+
+    });
+
+
+
+    return result;
+
+
+}
+
+
+
+
+function translateText(){
+
+
+    if(runeMode){
+
+
+        output.value =
+        runesToRussian(
+            output.value
+        );
+
+
+    }
+    else{
+
+
+        output.value =
+        russianToRunes(
+            output.value
+        );
+
+
+    }
+
+
+    saveCurrent();
+
+
+}
+
+
+
+
+
+// ===== ИЗБРАННОЕ =====
+
+
+function saveFavorite(){
+
+
+    if(output.value.trim()==""){
+
+        alert(
+            "Нет текста для сохранения"
+        );
+
+        return;
+
+    }
+
+
+
+    let favorites =
+
+    JSON.parse(
+        localStorage.getItem(
+            "favorites"
+        )
+    ) || [];
+
+
+
+    favorites.push(
+        output.value
+    );
+
+
+
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(favorites)
+    );
+
+
+
+    alert(
+        "Сохранено в избранное"
+    );
+
+
+}
+
+
+
+
+function showFavorites(){
+
+
+    let favorites =
+
+    JSON.parse(
+        localStorage.getItem(
+            "favorites"
+        )
+    ) || [];
+
+
+
+    if(favorites.length===0){
+
+        alert(
+            "Избранное пусто"
+        );
+
+        return;
+
+    }
+
+
+
+    alert(
+        favorites.join("\n\n")
+    );
+
+
+}
+
+
+
+
+// ===== ИСТОРИЯ =====
+
+
+function saveHistory(){
+
+
+    if(output.value.trim()==""){
+
+        alert(
+            "Нет текста для сохранения"
+        );
+
+        return;
+
+    }
+
+
+
+    let history =
+
+    JSON.parse(
+        localStorage.getItem(
+            "history"
+        )
+    ) || [];
+
+
+
+    history.push(
+        output.value
+    );
+
+
+
+    localStorage.setItem(
+        "history",
+        JSON.stringify(history)
+    );
+
+
+
+    alert(
+        "Добавлено в историю"
+    );
+
+
+}
+
+
+
+
+
+function showHistory(){
+
+
+    let history =
+
+    JSON.parse(
+        localStorage.getItem(
+            "history"
+        )
+    ) || [];
+
+
+
+    if(history.length===0){
+
+        alert(
+            "История пуста"
+        );
+
+        return;
+
+    }
+
+
+
+    alert(
+        history.join("\n\n")
+    );
+
+
+}
+
+
+
+
+function clearHistory(){
+
+    localStorage.removeItem(
+        "history"
+    );
+
+
+    alert(
+        "История очищена"
+    );
+
+}
+
+
+
+</script>
+<script>
+
+
+// ===== РЕЖИМ РАЗРАБОТЧИКА =====
+
+
+// слово "рунный" рунами
+
+const developerWord =
+"ᚱᚢᚾᚾᛃᛃ";
+
+
+// открытие режима разработчика
+
+function checkDeveloperWord(){
+
+
+    if(output.value===developerWord){
+
+
+        document
+        .getElementById("developerButton")
+        .classList
+        .remove("hidden");
+
+
+        alert(
+        "Доступ к режиму разработчика открыт"
+        );
+
+
+    }
+
+}
+
+
+
+// ===== ПАРОЛЬ РАЗРАБОТЧИКА =====
+
+
+// здесь будет проверочная запись пароля
+
+const developerPasswordHash =
+"DEVELOPER_HASH";
+
+
+
+function openDeveloper(){
+
+
+    let password =
+    prompt(
+    "Введите пароль разработчика"
+    );
+
+
+    if(password){
+
+
+        // здесь будет проверка хэша
+
+
+        alert(
+        "Режим разработчика открыт"
+        );
+
+
+        showDeveloperPanel();
+
+
+    }
+
+
+}
+
+
+
+// ===== ПАНЕЛЬ РАЗРАБОТЧИКА =====
+
+
+function showDeveloperPanel(){
+
+
+    alert(
+`
+⚙️ Режим разработчика
+
+Доступно:
+
+🔤 Таблица рун
+📏 Размер клавиатуры
+📤 Экспорт настроек
+📥 Импорт настроек
+⭐ Очистить избранное
+📄 Просмотр кода
+✏️ Редактировать код
+`
+    );
+
+
+}
+
+
+
+// ===== ОЧИСТКА ИЗБРАННОГО =====
+
+
+function clearFavorites(){
+
+
+    localStorage.removeItem(
+    "favorites"
+    );
+
+
+    alert(
+    "Избранное очищено"
+    );
+
+
+}
+
+
+
+
+// ===== ЭКСПОРТ НАСТРОЕК =====
+
+
+function exportSettings(){
+
+
+    let settings = {
+
+
+        theme:
+        document.body.className,
+
+
+        mode:
+        runeMode,
+
+
+        text:
+        output.value
+
+
+    };
+
+
+
+    let file =
+    new Blob(
+
+        [
+        JSON.stringify(settings)
+        ],
+
+        {
+        type:"application/json"
+        }
+
+    );
+
+
+
+    let link =
+    document.createElement("a");
+
+
+
+    link.href =
+    URL.createObjectURL(file);
+
+
+
+    link.download =
+    "runopisec_settings.json";
+
+
+
+    link.click();
+
+
+}
+
+
+
+// ===== ИМПОРТ НАСТРОЕК =====
+
+
+function importSettings(file){
+
+
+    let reader =
+    new FileReader();
+
+
+
+    reader.onload=function(){
+
+
+        let settings =
+        JSON.parse(
+        reader.result
+        );
+
+
+
+        output.value =
+        settings.text || "";
+
+
+
+        runeMode =
+        settings.mode;
+
+
+
+        document.body.className =
+        settings.theme || "";
+
+
+
+        saveCurrent();
+
+
+    };
+
+
+
+    reader.readAsText(file);
+
+
+}
+
+
+
+// ===== РЕДАКТИРОВАНИЕ КОДА =====
+
+
+function editCode(){
+
+
+    alert(
+    "Для изменения кода требуется подтверждение"
+    );
+
+
+}
+
+
+
+// второй пароль
+
+const codePasswordHash =
+"CODE_HASH";
+
+
+
+function saveCodeChanges(){
+
+
+    let password =
+    prompt(
+    "Введите пароль подтверждения кода"
+    );
+
+
+
+    if(password){
+
+
+        alert(
+        "Изменения кода сохранены"
+        );
+
+
+    }
+    else{
+
+
+        alert(
+        "Изменения не сохранены"
+        );
+
+
+    }
+
+
+}
+
+
+
+// запуск проверки слова разработчика
+
+output.addEventListener(
+"input",
+checkDeveloperWord
+);
+
+
+
+</script>
+
+
+</body>
+
+</html>
