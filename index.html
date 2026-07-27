@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>ᚱ Рунописец V1.2</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Рунописец">
+
+
+<style>
+
+
+*{
+    box-sizing:border-box;
+}
+
+
+
+body{
+
+    margin:0;
+
+    padding:20px;
+
+    min-height:100vh;
+
+    background:#111;
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    text-align:center;
+
+}
+
+
+
+h1{
+
+    font-size:28px;
+
+}
+
+
+
+#modeText{
+
+    margin:10px;
+
+    font-size:18px;
+
+}
+
+
+
+textarea{
+
+    width:100%;
+
+    max-width:700px;
+
+    height:140px;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    border:2px solid #555;
+
+    background:#000;
+
+    color:white;
+
+    font-size:22px;
+
+    resize:none;
+
+}
+
+
+
+.toolbar{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:8px;
+
+    margin:15px auto;
+
+}
+
+
+
+button{
+
+    padding:10px 14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#333;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+
+
+button:active{
+
+    transform:scale(0.95);
+
+}
+
+
+
+.keyboard{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(65px,1fr));
+
+    gap:10px;
+
+    max-width:900px;
+
+    margin:20px auto;
+
+}
+
+
+
+.key{
+
+    min-height:80px;
+
+    border-radius:12px;
+
+    background:#222;
+
+    border:1px solid #555;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+
+.rune{
+
+    font-size:38px;
+
+}
+
+
+
+.letter{
+
+    font-size:18px;
+
+    opacity:0.8;
+
+}
+
+
+
+.smallRune .rune{
+
+    font-size:22px;
+
+}
+
+
+
+.smallRune .letter{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>ᚱ Рунописец V1.2</h1>
+
+
+<div id="modeText">
+
+Режим: Руны
+
+</div>
+
+
+
+<textarea id="text" placeholder="Введите текст..."></textarea>
+
+
+
+<div class="toolbar">
+
+<button onclick="copyText()">
+📋 Копировать
+</button>
+
+
+<button onclick="switchMode()">
+🔄 Режим
+</button>
+
+
+<button onclick="translateText()">
+🔤 Перевод
+</button>
+
+
+</div>
+
+
+
+<div class="toolbar">
+
+<button onclick="deleteText()">
+⌫ Удалить
+</button>
+
+
+<button onclick="spaceText()">
+␣ Пробел
+</button>
+
+
+<button onclick="enterText()">
+↵ Enter
+</button>
+
+
+<button onclick="clearText()">
+🗑 Очистить
+</button>
+
+
+</div>
+
+
+
+<div class="keyboard" id="keyboard"></div>
+<script>
+
+
+// ===== ТАБЛИЦА РУН =====
+
+
+const runes = [
+
+
+["ᚨ","А"],
+
+["ᛒ","Б"],
+
+["ᚹ","В"],
+
+["ᚷ","Г"],
+
+
+["ᛞ","Д"],
+
+["ᛖ","Е"],
+
+["ᛖᛖ","Ё"],
+
+["ᚦ","Ж"],
+
+
+["ᛉ","З"],
+
+["ᛁ","И"],
+
+["ᛁᛃ","Й"],
+
+["ᚲ","К"],
+
+
+["ᛚ","Л"],
+
+["ᛗ","М"],
+
+["ᚾ","Н"],
+
+["ᛟ","О"],
+
+
+["ᛈ","П"],
+
+["ᚱ","Р"],
+
+["ᛋ","С"],
+
+["ᛏ","Т"],
+
+
+["ᚢ","У"],
+
+["ᚠ","Ф"],
+
+["ᚺ","Х"],
+
+
+["ᛏᛋ","Ц"],
+
+["ᚦᚲ","Ч"],
+
+["ᚦᛋ","Ш"],
+
+["ᚦᛋᚲ","Щ"],
+
+
+["ᛁᛁ","Ы"],
+
+["ᛖᛃ","Э"],
+
+
+["ᛃᚢ","Ю"],
+
+["ᛃᚨ","Я"],
+
+
+["ᛜ","НГ"]
+
+
+];
+
+
+
+
+
+// ===== ЭЛЕМЕНТЫ =====
+
+
+const keyboard =
+document.getElementById("keyboard");
+
+
+const output =
+document.getElementById("text");
+
+
+
+let runeMode = true;
+
+
+
+
+
+// ===== СОЗДАНИЕ КЛАВИАТУРЫ =====
+
+
+function createKeyboard(){
+
+
+    keyboard.innerHTML = "";
+
+
+    runes.forEach(function(item){
+
+
+        let key =
+        document.createElement("button");
+
+
+        key.className = "key";
+
+
+        key.innerHTML =
+
+        `
+        <div class="rune">${item[0]}</div>
+        <div class="letter">${item[1]}</div>
+        `;
+
+
+
+        key.onclick = function(){
+
+
+            if(runeMode){
+
+
+                addText(item[0]);
+
+
+            }
+            else{
+
+
+                addText(item[1]);
+
+
+            }
+
+
+        };
+
+
+
+        keyboard.appendChild(key);
+
+
+    });
+
+
+}
+
+
+
+
+
+// ===== ДОБАВЛЕНИЕ ТЕКСТА =====
+
+
+function addText(value){
+
+
+    output.value += value;
+
+
+    saveCurrent();
+
+
+}
+
+
+
+
+
+// ===== ПЕРЕКЛЮЧЕНИЕ РЕЖИМА =====
+
+
+function switchMode(){
+
+
+    runeMode = !runeMode;
+
+
+
+    document.getElementById("modeText").innerText =
+
+
+    runeMode
+
+    ?
+
+    "Режим: Руны"
+
+    :
+
+    "Режим: Буквы";
+
+
+
+    keyboard.classList.toggle(
+
+        "smallRune",
+
+        !runeMode
+
+    );
+
+
+}
+
+
+
+// запуск клавиатуры
+
+createKeyboard();
+// ===== СОХРАНЕНИЕ ТЕКСТА =====
+
+
+function saveCurrent(){
+
+
+    localStorage.setItem(
+
+        "runopisec_text",
+
+        output.value
+
+    );
+
+
+}
+
+
+
+
+function loadCurrent(){
+
+
+    let saved =
+
+    localStorage.getItem(
+
+        "runopisec_text"
+
+    );
+
+
+
+    if(saved){
+
+
+        output.value = saved;
+
+
+    }
+
+
+}
+
+
+
+
+
+// ===== КНОПКИ ТЕКСТА =====
+
+
+
+function deleteText(){
+
+
+    let text = output.value;
+
+
+
+    if(text.length === 0){
+
+        return;
+
+    }
+
+
+
+    // составные руны удаляются полностью
+
+
+    const complexRunes = [
+
+
+        "ᚦᛋᚲ", // Щ
+
+        "ᛖᛖ",   // Ё
+
+        "ᛃᚢ",   // Ю
+
+        "ᛃᚨ",   // Я
+
+        "ᛏᛋ",   // Ц
+
+        "ᚦᚲ",   // Ч
+
+        "ᚦᛋ",   // Ш
+
+        "ᛁᛃ",   // Й
+
+        "ᛁᛁ",   // Ы
+
+        "ᛖᛃ",   // Э
+
+        "ᛜ"     // НГ
+
+
+    ];
+
+
+
+    for(let rune of complexRunes){
+
+
+        if(text.endsWith(rune)){
+
+
+            output.value =
+
+            text.slice(0,-rune.length);
+
+
+
+            saveCurrent();
+
+
+            return;
+
+
+        }
+
+
+    }
+
+
+
+    output.value =
+
+    text.slice(0,-1);
+
+
+
+    saveCurrent();
+
+
+}
+
+
+
+
+function spaceText(){
+
+
+    output.value += " ";
+
+
+    saveCurrent();
+
+
+}
+
+
+
+
+function enterText(){
+
+
+    output.value += "\n";
+
+
+    saveCurrent();
+
+
+}
+
+
+
+
+function clearText(){
+
+
+    output.value = "";
+
+
+    saveCurrent();
+
+
+}
+
+
+
+
+
+// загрузка сохранённого текста
+
+
+loadCurrent();
+
+
+// ===== КОПИРОВАНИЕ =====
+
+
+function copyText(){
+
+
+    navigator.clipboard.writeText(
+        output.value
+    )
+
+
+    .then(function(){
+
+
+        alert("Текст скопирован");
+
+
+    })
+
+
+    .catch(function(){
+
+
+        alert("Ошибка копирования");
+
+
+    });
+
+
+}
+
+
+
+
+
+// ===== ПРОВЕРКА РУН =====
+
+
+function hasRunes(text){
+
+    const allRunes = [
+
+        "ᚦᛋᚲ", // Щ
+        "ᛖᛖ",   // Ё
+        "ᛃᚢ",   // Ю
+        "ᛃᚨ",   // Я
+        "ᛏᛋ",   // Ц
+        "ᚦᚲ",   // Ч
+        "ᚦᛋ",   // Ш
+        "ᛁᛃ",   // Й
+        "ᛁᛁ",   // Ы
+        "ᛖᛃ",   // Э
+        "ᛜ",    // НГ
+
+        "ᚨ",
+        "ᛒ",
+        "ᚹ",
+        "ᚷ",
+        "ᛞ",
+        "ᛖ",
+        "ᚦ",
+        "ᛉ",
+        "ᛁ",
+        "ᚲ",
+        "ᛚ",
+        "ᛗ",
+        "ᚾ",
+        "ᛟ",
+        "ᛈ",
+        "ᚱ",
+        "ᛋ",
+        "ᛏ",
+        "ᚢ",
+        "ᚠ",
+        "ᚺ"
+
+    ];
+
+
+    for(let rune of allRunes){
+
+        if(text.includes(rune)){
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+
+
+
+
+// ===== РУНЫ → БУКВЫ =====
+
+
+function runesToRussian(text){
+
+
+    let result = text;
+
+
+
+    const runeMap = [
+
+
+        ["ᚦᛋᚲ","Щ"],
+
+        ["ᛖᛖ","Ё"],
+
+        ["ᛃᚢ","Ю"],
+
+        ["ᛃᚨ","Я"],
+
+        ["ᛏᛋ","Ц"],
+
+        ["ᚦᚲ","Ч"],
+
+        ["ᚦᛋ","Ш"],
+
+        ["ᛁᛃ","Й"],
+
+        ["ᛁᛁ","Ы"],
+
+        ["ᛖᛃ","Э"],
+
+        ["ᛜ","НГ"],
+
+
+
+        ["ᚨ","А"],
+
+        ["ᛒ","Б"],
+
+        ["ᚹ","В"],
+
+        ["ᚷ","Г"],
+
+        ["ᛞ","Д"],
+
+        ["ᛖ","Е"],
+
+        ["ᚦ","Ж"],
+
+        ["ᛉ","З"],
+
+        ["ᛁ","И"],
+
+        ["ᚲ","К"],
+
+        ["ᛚ","Л"],
+
+        ["ᛗ","М"],
+
+        ["ᚾ","Н"],
+
+        ["ᛟ","О"],
+
+        ["ᛈ","П"],
+
+        ["ᚱ","Р"],
+
+        ["ᛋ","С"],
+
+        ["ᛏ","Т"],
+
+        ["ᚢ","У"],
+
+        ["ᚠ","Ф"],
+
+        ["ᚺ","Х"]
+
+
+    ];
+
+
+
+    runeMap.forEach(function(item){
+
+
+        result = result
+        .split(item[0])
+        .join(item[1]);
+
+
+    });
+
+
+
+    return result;
+
+
+}
+
+
+
+
+
+// ===== БУКВЫ → РУНЫ =====
+
+
+function russianToRunes(text){
+
+
+    let result = text.toUpperCase();
+
+
+
+    const letterMap = [
+
+
+        ["Щ","ᚦᛋᚲ"],
+
+        ["Ё","ᛖᛖ"],
+
+        ["Ю","ᛃᚢ"],
+
+        ["Я","ᛃᚨ"],
+
+        ["Ц","ᛏᛋ"],
+
+        ["Ч","ᚦᚲ"],
+
+        ["Ш","ᚦᛋ"],
+
+        ["Й","ᛁᛃ"],
+
+        ["Ы","ᛁᛁ"],
+
+        ["Э","ᛖᛃ"],
+
+        ["НГ","ᛜ"],
+
+
+
+        ["А","ᚨ"],
+
+        ["Б","ᛒ"],
+
+        ["В","ᚹ"],
+
+        ["Г","ᚷ"],
+
+        ["Д","ᛞ"],
+
+        ["Е","ᛖ"],
+
+        ["Ж","ᚦ"],
+
+        ["З","ᛉ"],
+
+        ["И","ᛁ"],
+
+        ["К","ᚲ"],
+
+        ["Л","ᛚ"],
+
+        ["М","ᛗ"],
+
+        ["Н","ᚾ"],
+
+        ["О","ᛟ"],
+
+        ["П","ᛈ"],
+
+        ["Р","ᚱ"],
+
+        ["С","ᛋ"],
+
+        ["Т","ᛏ"],
+
+        ["У","ᚢ"],
+
+        ["Ф","ᚠ"],
+
+        ["Х","ᚺ"]
+
+
+    ];
+
+
+
+    letterMap.forEach(function(item){
+
+
+        result = result
+        .split(item[0])
+        .join(item[1]);
+
+
+    });
+
+
+
+    return result;
+
+
+}
+
+
+
+
+
+// ===== КНОПКА ПЕРЕВОД =====
+
+
+function translateText(){
+
+
+    if(hasRunes(output.value)){
+
+
+        output.value =
+        runesToRussian(
+            output.value
+        );
+
+
+    }
+
+    else{
+
+
+        output.value =
+        russianToRunes(
+            output.value
+        );
+
+
+    }
+
+
+    saveCurrent();
+
+
+}
+
+
+
+</script>
